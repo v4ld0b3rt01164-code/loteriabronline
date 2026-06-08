@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Política de Privacidade - LoteriaBR"
+  description="Política de Privacidade do site LoteriaBR"
+  currentPage="politica-de-privacidade"
+>
+  <header slot="header" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[#1A1A1A] to-[#252525] border-b-2 border-accent shadow-lg">
+    <div class="max-w-[1250px] mx-auto flex items-center gap-3 px-4 py-3">
+      <a href="/"><img src="/logo.webp" alt="LoteriaBR" class="h-[80px] md:h-[115px] object-contain block" /></a>
+      <a href="/" class="btn-voltar"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Voltar</a>
+    </div>
+  </header>
+
+  <main class="pagina-estatica">
+    <h1>Política de Privacidade</h1>
+    <p>Última atualização: Junho de 2026</p>
+    <p>A LoteriaBR respeita a sua privacidade. Esta política descreve como coletamos, usamos e protegemos suas informações.</p>
+
+    <h2>Informações que Coletamos</h2>
+    <p>Não coletamos informações pessoais identificáveis automaticamente. O formulário de contato coleta apenas nome e e-mail para responder sua solicitação.</p>
+
+    <h2>Cookies</h2>
+    <p>Utilizamos cookies apenas para funcionalidades essenciais do site, como lembrar preferências de navegação. Não usamos cookies de rastreamento ou publicidade.</p>
+
+    <h2>Compartilhamento de Dados</h2>
+    <p>Não vendemos, trocamos ou transferimos suas informações para terceiros sem seu consentimento, exceto quando exigido por lei.</p>
+
+    <h2>Segurança</h2>
+    <p>Implementamos medidas de segurança para proteger suas informações durante a transmissão e armazenamento.</p>
+
+    <h2>Alterações</h2>
+    <p>Podemos atualizar esta política periodicamente. Recomendamos revisá-la regularmente.</p>
+
+    <h2>Contato</h2>
+    <p>Para dúvidas sobre esta política, entre em contato através da nossa <a href="/contato">página de contato</a>.</p>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .pagina-estatica a { color: #F59E0B; }
+</style>

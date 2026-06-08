@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Termos de Uso - LoteriaBR"
+  description="Termos de Uso do site LoteriaBR"
+  currentPage="termos-de-uso"
+>
+  <header slot="header" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[#1A1A1A] to-[#252525] border-b-2 border-accent shadow-lg">
+    <div class="max-w-[1250px] mx-auto flex items-center gap-3 px-4 py-3">
+      <a href="/"><img src="/logo.webp" alt="LoteriaBR" class="h-[80px] md:h-[115px] object-contain block" /></a>
+      <a href="/" class="btn-voltar"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Voltar</a>
+    </div>
+  </header>
+
+  <main class="pagina-estatica">
+    <h1>Termos de Uso</h1>
+    <p>Última atualização: Junho de 2026</p>
+    <p>Ao acessar o site LoteriaBR, você concorda com estes termos de uso.</p>
+
+    <h2>Uso do Conteúdo</h2>
+    <p>Os resultados exibidos são obtidos de fontes públicas e têm caráter meramente informativo. Não garantimos a precisão ou atualização em tempo real dos dados.</p>
+
+    <h2>Propriedade Intelectual</h2>
+    <p>Todo o conteúdo do site, incluindo texto, design e logotipos, é propriedade da LoteriaBR, salvo quando indicado o contrário.</p>
+
+    <h2>Limitação de Responsabilidade</h2>
+    <p>A LoteriaBR não se responsabiliza por decisões tomadas com base nas informações exibidas. Os resultados são fornecidos "como estão", sem garantias de qualquer tipo.</p>
+
+    <h2>Links Externos</h2>
+    <p>Nosso site pode conter links para sites de terceiros. Não nos responsabilizamos pelo conteúdo ou práticas de privacidade desses sites.</p>
+
+    <h2>Alterações</h2>
+    <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. Alterações serão publicadas nesta página.</p>
+
+    <h2>Contato</h2>
+    <p>Para dúvidas sobre estes termos, entre em contato através da nossa <a href="/contato">página de contato</a>.</p>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .pagina-estatica a { color: #F59E0B; }
+</style>

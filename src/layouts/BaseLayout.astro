@@ -1,0 +1,52 @@
+---
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  currentPage: string;
+}
+
+const { title, description, currentPage } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+      rel="stylesheet"
+      media="print" onload="this.media='all'"
+    />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LoteriaBR" />
+    <meta property="og:image" content="https://loteriabr.online/og-image.webp" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">{JSON.stringify({"@context":"https://schema.org","@type":"WebSite","name":"LoteriaBR","url":"https://loteriabr.online"})}</script>
+  </head>
+  <body style="padding-top: var(--header-h); padding-bottom: var(--footer-h);">
+    <a href="#main-content" class="skip-link">Pular para o conte\u00fado</a>
+    <slot name="header" />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer currentPage={currentPage} />
+    <script>
+      document.getElementById('year')!.textContent = String(
+        new Date().getFullYear()
+      );
+    </script>
+  </body>
+</html>

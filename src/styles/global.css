@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overflow-y: scroll; scroll-behavior: smooth; }
+
+  body {
+    @apply font-sans text-text-primary min-h-screen flex flex-col;
+    background: linear-gradient(135deg, #0F0F1E 0%, #1A1A2E 50%, #0F0F1E 100%);
+    background-attachment: fixed;
+  }
+
+  :root {
+    --header-h: 80px;
+    --footer-h: 60px;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --header-h: 100px;
+      --footer-h: 70px;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 0.5rem 1rem;
+    background: #00D9FF;
+    color: #0F0F1E;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+  }
+
+  .btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 217, 255, 0.1);
+    color: #00D9FF;
+    border: 1.5px solid rgba(0, 217, 255, 0.4);
+    padding: 0.7rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+  }
+  .btn-voltar:hover {
+    background: rgba(0, 217, 255, 0.2);
+    border-color: rgba(0, 217, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 217, 255, 0.2);
+  }
+
+  .pagina-estatica {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    flex: 1;
+  }
+  .pagina-estatica h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00D9FF, #7F39FB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .pagina-estatica h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #00D9FF;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .pagina-estatica p {
+    color: #A0A0A0;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+  .pagina-estatica strong {
+    color: #F8F9FA;
+  }
+  @media (max-width: 600px) {
+    .pagina-estatica { padding: 1.5rem 1rem; }
+    .pagina-estatica h1 { font-size: 1.4rem; }
+  }
+
+  .form-contato {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    max-width: 500px;
+  }
+  .form-contato label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #F8F9FA;
+  }
+  .form-contato input,
+  .form-contato textarea {
+    background: rgba(26, 26, 46, 0.6);
+    color: #F8F9FA;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .form-contato input:focus,
+  .form-contato textarea:focus {
+    border-color: #00D9FF;
+    background: rgba(26, 26, 46, 0.8);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+  }
+  .form-contato textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .form-contato button {
+    background: linear-gradient(135deg, #00D9FF, #7F39FB);
+    color: #0F0F1E;
+    border: none;
+    border-radius: 10px;
+    padding: 0.9rem 1.8rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: fit-content;
+    box-shadow: 0 8px 20px rgba(0, 217, 255, 0.2);
+  }
+  .form-contato button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 217, 255, 0.3);
+  }
+  .form-contato .mensagem-form {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+  .form-contato .mensagem-form.sucesso {
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+  }
+  .form-contato .mensagem-form.erro {
+    color: #EF4444;
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.2), inset 0 0 15px rgba(0, 217, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 217, 255, 0.35), inset 0 0 25px rgba(0, 217, 255, 0.1);
+  }
+}
+
+@layer components {
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .card-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .card-grid {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .card-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  .result-card {
+    @apply bg-surface border border-accent/20 rounded-xl p-4 md:p-5 backdrop-blur-sm transition-all duration-300 hover:border-accent/60 hover:shadow-glow;
+    animation: slideUp 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.3));
+  }
+
+  .result-card:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(22, 33, 62, 0.5));
+  }
+
+  .result-card-title {
+    @apply text-xs md:text-sm font-bold text-text-secondary mb-2 uppercase tracking-wider;
+  }
+
+  .result-card-number {
+    @apply text-2xl md:text-3xl font-black bg-gradient-to-r from-accent to-accent-alt bg-clip-text text-transparent;
+  }
+}

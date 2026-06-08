@@ -1,0 +1,32 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import DateNav from '../components/DateNav.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  currentPage: string;
+  pageSlug: string;
+}
+
+const { title, description, currentPage, pageSlug } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} currentPage={currentPage}>
+  <Fragment slot="header">
+    <Header pageSlug={pageSlug} />
+  </Fragment>
+
+  <div class="px-[6px]">
+    <div class="max-w-grid mx-auto mb-2 mt-1 md:mb-4 md:mt-4">
+      <div id="resultContainer" class="card-grid"></div>
+      <div id="emptyState" class="hidden text-center py-10 text-text-secondary">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-[10px]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <p>Nenhum resultado disponível para esta data.</p>
+      </div>
+      <div id="loadingState" class="hidden text-accent py-8 text-center font-semibold">Carregando...</div>
+    </div>
+    <slot />
+  </div>
+</BaseLayout>
