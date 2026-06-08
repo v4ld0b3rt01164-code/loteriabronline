@@ -13,12 +13,12 @@ const { pageSlug } = Astro.props;
   class="fixed top-0 left-0 w-full z-50 glass border-b border-accent/10"
   style="box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);"
 >
-  <div class="max-w-grid mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-4">
-    <a href="/" class="flex items-center justify-center md:justify-start gap-2.5 group" aria-label="LoteriaBR - Início">
-      <img src="/logo.webp" alt="LoteriaBR" class="h-8 md:h-10 w-auto object-contain" />
+  <div class="max-w-grid mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3">
+    <a href="/" class="flex items-center justify-center md:justify-start group" aria-label="LoteriaBR - Início">
+      <img src="/logo.webp" alt="LoteriaBR" class="h-[30px] md:h-[90px] w-auto object-contain" />
     </a>
 
-    <div class="flex flex-row items-center justify-center gap-2 md:gap-3">
+    <div class="flex flex-row items-center justify-center gap-1.5 md:gap-3">
       <LotterySelector pageSlug={pageSlug} />
       <DateNav pageSlug={pageSlug} />
     </div>

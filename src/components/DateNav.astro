@@ -9,7 +9,7 @@ const { pageSlug } = Astro.props;
 <div
   data-page-slug={pageSlug}
   id="dateNav"
-  class="flex items-center bg-surface-2/60 border border-accent/15 rounded-xl w-auto max-w-[240px] md:max-w-[300px] min-h-[42px] overflow-hidden backdrop-blur-sm hover:border-accent/30 transition-all duration-300"
+  class="flex items-center bg-surface-2/60 border border-accent/15 rounded-xl w-auto max-w-[200px] md:max-w-[300px] min-h-[40px] overflow-hidden backdrop-blur-sm hover:border-accent/30 transition-all duration-300"
 >
   <button id="prevDate" class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-r border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none" aria-label="Data anterior">
     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -17,7 +17,7 @@ const { pageSlug } = Astro.props;
   <input
     type="date"
     id="inputData"
-    class="flex-1 bg-transparent text-text-primary px-2 py-2.5 font-mono font-semibold text-center cursor-pointer text-sm md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:opacity-0"
+    class="flex-1 bg-transparent text-text-primary px-1.5 py-2 font-mono font-semibold text-center cursor-pointer text-xs md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:opacity-0"
     aria-label="Selecionar data"
   />
   <button id="nextDate" class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-l border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none" aria-label="Próxima data">
@@ -139,7 +139,7 @@ const { pageSlug } = Astro.props;
         : 'background: linear-gradient(135deg, #8B5CF6, #EC4899);';
 
       const tituloDiv = document.createElement('div');
-      tituloDiv.className = 'text-center text-xs md:text-sm font-bold uppercase py-3 px-2 tracking-widest text-white';
+      tituloDiv.className = 'text-center text-sm md:text-base font-extrabold uppercase py-3 px-3 tracking-wider text-white whitespace-nowrap overflow-hidden text-ellipsis';
       tituloDiv.style.cssText = tituloGradient;
       tituloDiv.textContent = exibicao;
 
@@ -167,11 +167,11 @@ const { pageSlug } = Astro.props;
       animalCol.className = 'flex flex-col items-center gap-1 shrink-0';
 
       const animalNome = document.createElement('span');
-      animalNome.className = 'text-xs font-bold text-accent-light text-center leading-tight';
+      animalNome.className = 'text-xs md:text-sm font-bold text-accent-light text-center leading-tight';
       animalNome.textContent = animal;
 
       const animalImg = document.createElement('img');
-      animalImg.className = 'w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]';
+      animalImg.className = 'w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]';
       animalImg.loading = true;
       animalImg.src = `/animais-webp/${primeiro.grupo}.webp`;
       animalImg.alt = animal;
@@ -183,25 +183,29 @@ const { pageSlug } = Astro.props;
       topRow.appendChild(animalCol);
 
       const table = document.createElement('table');
-      table.className = 'w-full text-xs md:text-sm';
+      table.className = 'w-full text-sm md:text-base';
 
       const tbody = document.createElement('tbody');
-      tbody.className = 'divide-y divide-accent/5';
+      tbody.className = 'divide-y divide-accent/8';
 
       for (const r of resultadosExibir) {
         const tr = document.createElement('tr');
-        tr.className = 'py-1.5';
+        tr.className = 'py-1';
+        const rowIdx = resultadosExibir.indexOf(r);
+        if (rowIdx % 2 === 0) {
+          tr.style.background = 'rgba(99, 102, 241, 0.03)';
+        }
 
         const td1 = document.createElement('td');
-        td1.className = 'text-text-muted font-medium py-1.5 w-[35%]';
+        td1.className = 'text-text-secondary font-medium py-2.5 px-2 w-[35%]';
         td1.textContent = r.posicao;
 
         const td2 = document.createElement('td');
-        td2.className = 'font-bold text-accent-light text-center py-1.5 w-[30%]';
+        td2.className = 'font-bold text-accent-light text-center py-2.5 px-1 w-[30%]';
         td2.textContent = r.milhar;
 
         const td3 = document.createElement('td');
-        td3.className = 'text-text-muted font-medium text-right py-1.5 w-[35%]';
+        td3.className = 'text-text-secondary font-medium text-right py-2.5 px-2 w-[35%]';
         td3.textContent = r.grupo > 0 ? String(r.grupo) : '-';
 
         tr.appendChild(td1);
@@ -213,7 +217,7 @@ const { pageSlug } = Astro.props;
       table.appendChild(tbody);
 
       const shareBtn = document.createElement('button');
-      shareBtn.className = 'share-btn w-full bg-gradient-to-r from-accent/10 via-violet/10 to-pink/10 border border-accent/15 text-accent-light font-semibold py-2.5 rounded-xl hover:border-accent/30 hover:from-accent/15 hover:via-violet/15 hover:to-pink/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm';
+      shareBtn.className = 'share-btn w-full bg-gradient-to-r from-accent/10 via-violet/10 to-pink/10 border border-accent/15 text-accent-light font-semibold py-2.5 rounded-xl hover:border-accent/30 hover:from-accent/15 hover:via-violet/15 hover:to-pink/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base';
 
       const shareSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       shareSvg.setAttribute('aria-hidden', 'true');
