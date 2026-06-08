@@ -183,35 +183,29 @@ const { pageSlug } = Astro.props;
       topRow.appendChild(animalCol);
 
       const table = document.createElement('table');
-      table.className = 'w-full text-sm md:text-base';
+      table.className = 'w-full text-sm md:text-base border-separate';
 
       const tbody = document.createElement('tbody');
-      tbody.className = 'divide-y';
-      tbody.style.setProperty('--tw-divide-opacity', '1');
-      tbody.style.borderTopColor = 'rgba(99, 102, 241, 0.06)';
-      tbody.style.borderBottomColor = 'rgba(99, 102, 241, 0.06)';
+      tbody.className = 'divide-y divide-white/10';
 
       for (const r of resultadosExibir) {
         const tr = document.createElement('tr');
         tr.className = 'py-1';
         const rowIdx = resultadosExibir.indexOf(r);
         if (rowIdx % 2 === 0) {
-          tr.style.background = 'rgba(99, 102, 241, 0.015)';
+          tr.style.background = 'rgba(148, 163, 184, 0.05)';
         }
 
         const td1 = document.createElement('td');
         td1.className = 'text-text-secondary font-medium py-2.5 px-2 w-[35%]';
-        td1.style.borderTop = '1px solid rgba(99, 102, 241, 0.06)';
         td1.textContent = r.posicao;
 
         const td2 = document.createElement('td');
         td2.className = 'font-bold text-accent-light text-center py-2.5 px-1 w-[30%]';
-        td2.style.borderTop = '1px solid rgba(99, 102, 241, 0.06)';
         td2.textContent = r.milhar;
 
         const td3 = document.createElement('td');
         td3.className = 'text-text-secondary font-medium text-right py-2.5 px-2 w-[35%]';
-        td3.style.borderTop = '1px solid rgba(99, 102, 241, 0.06)';
         td3.textContent = r.grupo > 0 ? String(r.grupo) : '-';
 
         tr.appendChild(td1);
