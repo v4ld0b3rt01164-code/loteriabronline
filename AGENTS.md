@@ -5,10 +5,12 @@ Astro 6 static site for lottery results (Jogo do Bicho, Federal, Nacional, etc.)
 
 ## Commands
 ```bash
-npm run dev       # Start dev server (astro dev)
-npm run build     # Production build (astro build)
+npm run dev       # Start dev server (astro dev) - requires Node >=22.12.0
+npm run build     # Production build (astro build)  - requires Node >=22.12.0
 npm run preview   # Preview build locally
 ```
+
+> **Node**: Astro 6 requires Node >=22.12.0. Use `nvm use 22.22.3` (available in the environment).
 
 ## Architecture
 - **Framework**: Astro 6 (static output)
@@ -78,6 +80,11 @@ Defined in `src/styles/global.css` as `.card-grid`
 - Animal images loaded from `/animais-webp/{grupo}.webp` (1-25)
 - Share button uses WhatsApp deep link with formatted text
 - Auto-refresh every 15 min when tab visible
+- **Logo**: `public/logo.webp` (1134x304, RGBA with alpha). Source: `public/logo.png` converted via sharp (`sharp(input).webp({quality:90, alphaQuality:90})`)
+- **Table dividers**: Use `border-b border-white/5` on `<tr>` instead of `divide-y` on `<tbody>` to avoid vertical column lines. Table must use `border-collapse` (Tailwind preflight default) — do NOT use `border-separate`.
+- **Card background**: `rgba(7, 7, 24, 0.35)` with `blur(12px)` — minimal contrast against `#050510` body background
+- **Mobile header**: `--header-h: 125px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
+- **Mobile select**: `max-w-none w-auto` (no width constraint) to avoid text clipping. Desktop: `md:max-w-[220px]`
 
 ## Verification
 ```bash
