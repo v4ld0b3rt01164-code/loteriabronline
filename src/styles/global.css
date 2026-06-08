@@ -17,7 +17,7 @@
   }
 
   :root {
-    --header-h: 130px;
+    --header-h: 100px;
     --footer-h: 56px;
     --glass-bg: rgba(12, 12, 36, 0.6);
     --glass-border: rgba(99, 102, 241, 0.12);
@@ -26,7 +26,7 @@
 
   @media (min-width: 768px) {
     :root {
-      --header-h: 310px;
+      --header-h: 170px;
       --footer-h: 64px;
     }
   }
@@ -275,6 +275,7 @@
     border: 1px solid rgba(99, 102, 241, 0.1);
     backdrop-filter: blur(16px);
     animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+    --table-divide: rgba(99, 102, 241, 0.06);
   }
 
   .result-card:hover {
