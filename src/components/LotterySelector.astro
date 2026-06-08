@@ -8,19 +8,24 @@ export interface Props {
 const { pageSlug } = Astro.props;
 ---
 
-<select
-  id="lotterySelect"
-  class="bg-surface-2 text-accent border border-accent/40 px-4 py-2.5 rounded-lg font-semibold w-auto max-w-[200px] md:max-w-[240px] text-[0.9rem] md:text-[0.95rem] cursor-pointer appearance-none leading-tight min-h-[40px] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:outline-none hover:border-accent/60 transition-all backdrop-blur-sm"
-  aria-label="Selecionar loteria"
->
-  {
-    LOTERIA_PAGES.map((loteria) => (
-      <option value={loteria.slug} selected={loteria.slug === pageSlug}>
-        {loteria.label}
-      </option>
-    ))
-  }
-</select>
+<div class="relative">
+  <select
+    id="lotterySelect"
+    class="appearance-none bg-surface-2/60 text-text-primary border border-accent/15 px-3 py-2 pr-8 rounded-xl font-semibold text-[0.8rem] md:text-[0.85rem] cursor-pointer leading-tight min-h-[38px] focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none hover:border-accent/30 transition-all duration-300 backdrop-blur-sm max-w-[140px] md:max-w-[180px]"
+    aria-label="Selecionar loteria"
+  >
+    {
+      LOTERIA_PAGES.map((loteria) => (
+        <option value={loteria.slug} selected={loteria.slug === pageSlug}>
+          {loteria.label}
+        </option>
+      ))
+    }
+  </select>
+  <div class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</div>
 
 <script>
   const select = document.getElementById('lotterySelect') as HTMLSelectElement;

@@ -7,14 +7,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Política de Privacidade do site LoteriaBR"
   currentPage="politica-de-privacidade"
 >
-  <header slot="header" class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[#1A1A1A] to-[#252525] border-b-2 border-accent shadow-lg">
-    <div class="max-w-[1250px] mx-auto flex items-center gap-3 px-4 py-3">
-      <a href="/"><img src="/logo.webp" alt="LoteriaBR" class="h-[80px] md:h-[115px] object-contain block" /></a>
-      <a href="/" class="btn-voltar"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Voltar</a>
+  <header slot="header" class="fixed top-0 left-0 w-full z-50 glass border-b border-accent/10" style="box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);">
+    <div class="max-w-grid mx-auto flex items-center gap-3 px-4 py-3 md:px-6 md:py-4">
+      <a href="/" class="flex items-center gap-2.5 group" aria-label="LoteriaBR - Início">
+        <div class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-accent via-violet to-pink overflow-hidden">
+          <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 text-white relative z-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="font-display text-lg font-bold tracking-tight">
+          <span class="text-text-primary">Loteria</span><span class="gradient-text">BR</span>
+        </span>
+      </a>
+      <a href="/" class="btn-voltar">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Voltar
+      </a>
     </div>
   </header>
 
-  <main class="pagina-estatica">
+  <div class="pagina-estatica">
     <h1>Política de Privacidade</h1>
     <p>Última atualização: Junho de 2026</p>
     <p>A LoteriaBR respeita a sua privacidade. Esta política descreve como coletamos, usamos e protegemos suas informações.</p>
@@ -36,9 +50,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <h2>Contato</h2>
     <p>Para dúvidas sobre esta política, entre em contato através da nossa <a href="/contato">página de contato</a>.</p>
-  </main>
+  </div>
 </BaseLayout>
-
-<style is:global>
-  .pagina-estatica a { color: #F59E0B; }
-</style>

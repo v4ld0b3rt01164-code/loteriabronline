@@ -7,40 +7,21 @@ const { currentPage } = Astro.props;
 ---
 
 <footer
-  class="fixed bottom-0 left-0 w-full z-50 bg-gradient-to-t from-bg via-bg to-transparent border-t border-accent/20 py-3 md:py-4 text-center backdrop-blur-md"
+  class="fixed bottom-0 left-0 w-full z-50 glass border-t border-accent/10"
   style="height: var(--footer-h);"
 >
-  <div class="flex flex-col gap-2">
-    <nav class="flex justify-center gap-0 flex-wrap text-xs md:text-sm">
-      <a
-        href="/contato"
-        class="text-accent no-underline font-medium px-2 hover:text-accent-alt transition-colors"
-      >Contato</a
-      ><span class="text-text-muted mx-2">•</span>
-      <a
-        href="/politica-de-privacidade"
-        class="text-accent no-underline font-medium px-2 hover:text-accent-alt transition-colors"
-      >Privacidade</a
-      ><span class="text-text-muted mx-2">•</span>
-      <a
-        href="/termos-de-uso"
-        class="text-accent no-underline font-medium px-2 hover:text-accent-alt transition-colors"
-      >Termos</a
-      >
-    </nav>
-    <p class="text-text-muted text-xs">
-      &copy; <span id="year"></span> LOTERIA.ai • Todos os direitos reservados
-    </p>
+  <div class="h-full flex items-center justify-center">
+    <div class="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 px-4">
+      <nav class="flex items-center gap-1 text-xs md:text-sm">
+        <a href="/contato" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Contato</a>
+        <span class="text-text-muted/30">|</span>
+        <a href="/politica-de-privacidade" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Privacidade</a>
+        <span class="text-text-muted/30">|</span>
+        <a href="/termos-de-uso" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Termos</a>
+      </nav>
+      <p class="text-text-muted text-[11px] md:text-xs">
+        &copy; <span id="year"></span> LoteriaBR
+      </p>
+    </div>
   </div>
 </footer>
-
-<style>
-  footer {
-    --footer-h: 60px;
-  }
-  @media (min-width: 768px) {
-    footer {
-      --footer-h: 70px;
-    }
-  }
-</style>

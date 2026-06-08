@@ -8,10 +8,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   currentPage="404"
 >
   <main class="flex-1 flex flex-col items-center justify-center px-4 text-center" style="padding-top: var(--header-h); padding-bottom: var(--footer-h);">
-    <h1 class="text-6xl font-black text-accent mb-4">404</h1>
-    <p class="text-text-secondary text-lg mb-8">Página não encontrada.</p>
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-accent/5 border border-accent/10 mb-6">
+      <span class="text-4xl font-black gradient-text">404</span>
+    </div>
+    <h1 class="text-2xl font-display font-bold text-text-primary mb-3">Página não encontrada</h1>
+    <p class="text-text-secondary text-sm mb-8 max-w-sm">A página que você está procurando não existe ou foi movida.</p>
     <a href="/" class="btn-voltar">
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Voltar ao início
     </a>
   </main>

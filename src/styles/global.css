@@ -8,20 +8,32 @@
 
   body {
     @apply font-sans text-text-primary min-h-screen flex flex-col;
-    background: linear-gradient(135deg, #0F0F1E 0%, #1A1A2E 50%, #0F0F1E 100%);
+    background: #050510;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 50%, rgba(139, 92, 246, 0.05), transparent),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(236, 72, 153, 0.04), transparent);
     background-attachment: fixed;
   }
 
   :root {
-    --header-h: 80px;
-    --footer-h: 60px;
+    --header-h: 72px;
+    --footer-h: 56px;
+    --glass-bg: rgba(12, 12, 36, 0.6);
+    --glass-border: rgba(99, 102, 241, 0.12);
+    --glass-blur: 20px;
   }
 
   @media (min-width: 768px) {
     :root {
-      --header-h: 100px;
-      --footer-h: 70px;
+      --header-h: 80px;
+      --footer-h: 64px;
     }
+  }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: #F1F5F9;
   }
 
   .skip-link {
@@ -29,10 +41,11 @@
     left: -9999px;
     z-index: 999;
     padding: 0.5rem 1rem;
-    background: #00D9FF;
-    color: #0F0F1E;
+    background: #6366F1;
+    color: #F1F5F9;
     font-weight: 700;
     text-decoration: none;
+    border-radius: 0 0 8px 0;
   }
   .skip-link:focus {
     left: 0.5rem;
@@ -42,61 +55,74 @@
   .btn-voltar {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: rgba(0, 217, 255, 0.1);
-    color: #00D9FF;
-    border: 1.5px solid rgba(0, 217, 255, 0.4);
-    padding: 0.7rem 1.2rem;
-    border-radius: 10px;
+    gap: 8px;
+    background: rgba(99, 102, 241, 0.08);
+    color: #818CF8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: 44px;
     white-space: nowrap;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
   }
   .btn-voltar:hover {
-    background: rgba(0, 217, 255, 0.2);
-    border-color: rgba(0, 217, 255, 0.8);
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 217, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
   }
 
   .pagina-estatica {
-    max-width: 800px;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem;
     flex: 1;
   }
   .pagina-estatica h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #00D9FF, #7F39FB);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #818CF8, #C084FC, #F472B6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
   }
   .pagina-estatica h2 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #00D9FF;
-    margin: 1.5rem 0 0.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #818CF8;
+    margin: 2rem 0 0.5rem;
+    letter-spacing: -0.01em;
   }
   .pagina-estatica p {
-    color: #A0A0A0;
+    color: #94A3B8;
     line-height: 1.8;
     margin-bottom: 1rem;
     font-size: 0.95rem;
   }
   .pagina-estatica strong {
-    color: #F8F9FA;
+    color: #F1F5F9;
+  }
+  .pagina-estatica a {
+    color: #818CF8;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  .pagina-estatica a:hover {
+    color: #C084FC;
   }
   @media (max-width: 600px) {
     .pagina-estatica { padding: 1.5rem 1rem; }
-    .pagina-estatica h1 { font-size: 1.4rem; }
+    .pagina-estatica h1 { font-size: 1.5rem; }
   }
 
   .form-contato {
@@ -104,101 +130,115 @@
     flex-direction: column;
     gap: 1.2rem;
     margin-top: 1.5rem;
-    max-width: 500px;
+    max-width: 520px;
   }
   .form-contato label {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: #F8F9FA;
+    font-size: 0.85rem;
+    color: #F1F5F9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
   .form-contato input,
   .form-contato textarea {
-    background: rgba(26, 26, 46, 0.6);
-    color: #F8F9FA;
-    border: 1px solid rgba(0, 217, 255, 0.3);
-    border-radius: 10px;
+    background: rgba(12, 12, 36, 0.5);
+    color: #F1F5F9;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 12px;
     padding: 0.8rem 1rem;
     font-family: inherit;
     font-size: 0.95rem;
     width: 100%;
     outline: none;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
   }
   .form-contato input:focus,
   .form-contato textarea:focus {
-    border-color: #00D9FF;
-    background: rgba(26, 26, 46, 0.8);
-    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(12, 12, 36, 0.7);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 20px rgba(99, 102, 241, 0.1);
+  }
+  .form-contato input::placeholder,
+  .form-contato textarea::placeholder {
+    color: #64748B;
   }
   .form-contato textarea {
-    min-height: 120px;
+    min-height: 130px;
     resize: vertical;
   }
   .form-contato button {
-    background: linear-gradient(135deg, #00D9FF, #7F39FB);
-    color: #0F0F1E;
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    color: #F1F5F9;
     border: none;
-    border-radius: 10px;
-    padding: 0.9rem 1.8rem;
+    border-radius: 12px;
+    padding: 0.85rem 2rem;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     width: fit-content;
-    box-shadow: 0 8px 20px rgba(0, 217, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+    letter-spacing: 0.02em;
   }
   .form-contato button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 217, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+  }
+  .form-contato button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
   .form-contato .mensagem-form {
     font-size: 0.9rem;
-    padding: 0.6rem 0.8rem;
+    padding: 0.7rem 1rem;
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: 10px;
   }
   .form-contato .mensagem-form.sucesso {
     color: #10B981;
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
   }
   .form-contato .mensagem-form.erro {
-    color: #EF4444;
-    background: rgba(239, 68, 68, 0.1);
+    color: #F87171;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.2);
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(0.5rem); }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 217, 255, 0.2), inset 0 0 15px rgba(0, 217, 255, 0.05);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(0, 217, 255, 0.35), inset 0 0 25px rgba(0, 217, 255, 0.1);
-  }
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(99, 102, 241, 0.15); }
+  50% { border-color: rgba(139, 92, 246, 0.35); }
 }
 
 @layer components {
   .card-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    max-width: 1280px;
+    gap: 10px;
+    max-width: 1360px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 8px;
@@ -230,21 +270,53 @@
   }
 
   .result-card {
-    @apply bg-surface border border-accent/20 rounded-xl p-4 md:p-5 backdrop-blur-sm transition-all duration-300 hover:border-accent/60 hover:shadow-glow;
-    animation: slideUp 0.4s ease-out;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.3));
+    @apply rounded-2xl p-0 overflow-hidden transition-all duration-500;
+    background: rgba(12, 12, 36, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    backdrop-filter: blur(16px);
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
   }
 
   .result-card:hover {
-    transform: translateY(-4px);
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(22, 33, 62, 0.5));
+    transform: translateY(-6px);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.12), 0 0 40px rgba(139, 92, 246, 0.06);
   }
 
-  .result-card-title {
-    @apply text-xs md:text-sm font-bold text-text-secondary mb-2 uppercase tracking-wider;
+  .result-card:nth-child(1) { animation-delay: 0.05s; }
+  .result-card:nth-child(2) { animation-delay: 0.1s; }
+  .result-card:nth-child(3) { animation-delay: 0.15s; }
+  .result-card:nth-child(4) { animation-delay: 0.2s; }
+  .result-card:nth-child(5) { animation-delay: 0.25s; }
+  .result-card:nth-child(6) { animation-delay: 0.3s; }
+  .result-card:nth-child(7) { animation-delay: 0.35s; }
+  .result-card:nth-child(8) { animation-delay: 0.4s; }
+  .result-card:nth-child(9) { animation-delay: 0.45s; }
+  .result-card:nth-child(10) { animation-delay: 0.5s; }
+
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
   }
 
-  .result-card-number {
-    @apply text-2xl md:text-3xl font-black bg-gradient-to-r from-accent to-accent-alt bg-clip-text text-transparent;
+  .gradient-text {
+    background: linear-gradient(135deg, #818CF8, #C084FC, #F472B6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-alt {
+    background: linear-gradient(135deg, #06B6D4, #6366F1, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
   }
 }
