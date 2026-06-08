@@ -80,10 +80,10 @@ Defined in `src/styles/global.css` as `.card-grid`
 - Animal images loaded from `/animais-webp/{grupo}.webp` (1-25)
 - Share button uses WhatsApp deep link with formatted text
 - Auto-refresh every 15 min when tab visible
-- **Logo**: `public/logo.webp` (1134x304, RGBA with alpha). Source: `public/logo.png` converted via sharp (`sharp(input).webp({quality:90, alphaQuality:90})`)
+- **Logo**: `public/logo.webp` (1134x304, RGBA with alpha). Source: `public/logo.png` converted via sharp (`sharp(input).webp({quality:90, alphaQuality:90})`). Mobile: 65px height, Desktop: 100px height
 - **Table dividers**: Use `border-b border-white/5` on `<tr>` instead of `divide-y` on `<tbody>` to avoid vertical column lines. Table must use `border-collapse` (Tailwind preflight default) — do NOT use `border-separate`.
-- **Card background**: `rgba(7, 7, 24, 0.35)` with `blur(12px)` — minimal contrast against `#050510` body background
-- **Mobile header**: `--header-h: 125px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
+- **Card background**: `rgba(10, 10, 28, 0.45)` with `blur(14px)` and subtle shadow — elegant distinction against `#050510` body background
+- **Mobile header**: `--header-h: 135px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
 - **Mobile select**: `max-w-none w-auto` (no width constraint) to avoid text clipping. Desktop: `md:max-w-[220px]`
 
 ## Verification
