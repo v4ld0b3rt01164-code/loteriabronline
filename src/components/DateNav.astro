@@ -262,21 +262,28 @@ const { pageSlug } = Astro.props;
     btn.disabled = true;
 
     try {
+      const originalStyles = {
+        background: cardEl.style.background,
+        backdropFilter: cardEl.style.backdropFilter,
+        transform: cardEl.style.transform,
+        border: cardEl.style.border
+      };
+
+      cardEl.style.background = '#0C0C24';
+      cardEl.style.backdropFilter = 'none';
+      cardEl.style.transform = 'none';
+      cardEl.style.border = '1px solid rgba(99, 102, 241, 0.3)';
+
       const canvas = await html2canvas(cardEl, {
-        backgroundColor: '#0C0C24',
         scale: 1,
         useCORS: true,
-        logging: false,
-        onclone: (clonedDoc) => {
-          const clonedCard = clonedDoc.querySelector('.result-card');
-          if (clonedCard) {
-            clonedCard.style.background = '#0C0C24';
-            clonedCard.style.backdropFilter = 'none';
-            clonedCard.style.transform = 'none';
-            clonedCard.style.border = '1px solid rgba(99, 102, 241, 0.3)';
-          }
-        }
+        logging: false
       });
+
+      cardEl.style.background = originalStyles.background;
+      cardEl.style.backdropFilter = originalStyles.backdropFilter;
+      cardEl.style.transform = originalStyles.transform;
+      cardEl.style.border = originalStyles.border;
 
       canvas.toBlob(async (blob) => {
         if (!blob) return;
