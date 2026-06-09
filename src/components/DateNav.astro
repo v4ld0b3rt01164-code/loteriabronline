@@ -189,7 +189,7 @@ const { pageSlug } = Astro.props;
 
       for (const r of resultadosExibir) {
         const tr = document.createElement('tr');
-        tr.className = 'border-b border-white/10';
+        tr.className = 'border-b border-white/20';
         const rowIdx = resultadosExibir.indexOf(r);
         if (rowIdx % 2 === 0) {
           tr.style.background = 'rgba(148, 163, 184, 0.04)';
@@ -240,91 +240,24 @@ const { pageSlug } = Astro.props;
       card.appendChild(bodyDiv);
 
       const resultadosTexto = resultadosExibir
-        .map((r) => '• ' + r.posicao + ': ' + r.milhar + ' - ' + (ANIMAIS[r.grupo] || ''))
+        .map((r) => `*${r.posicao}* • ${r.milhar} — ${ANIMAIS[r.grupo] || '—'}`)
         .join('\n');
       card.setAttribute('data-texto-zap',
-        `*${exibicao}* - *${dataFormatada}*\n*Resultados:*\n${resultadosTexto}\n\n*loteriabr.online*`);
+        `🎲 *${exibicao}*\n📅 *${dataFormatada}*\n\n${resultadosTexto}\n\n━━━━━━━━━━━━━━\n🌐 *loteriabr.online*`);
 
       resultContainer.appendChild(card);
     }
   }
 
-  import html2canvas from 'html2canvas';
-
-  resultContainer.addEventListener('click', async (e) => {
+  resultContainer.addEventListener('click', (e) => {
     const btn = (e.target as Element).closest('.share-btn');
     if (!btn) return;
-    const cardEl = btn.closest('.result-card') as HTMLElement;
+    const cardEl = btn.closest('[data-texto-zap]') as HTMLElement;
     if (!cardEl) return;
-
-    const originalHtml = btn.innerHTML;
-    btn.innerHTML = 'Gerando...';
-    btn.disabled = true;
-
-    try {
-      const originalStyles = {
-        background: cardEl.style.background,
-        backdropFilter: cardEl.style.backdropFilter,
-        transform: cardEl.style.transform,
-        border: cardEl.style.border
-      };
-
-      cardEl.style.background = '#0C0C24';
-      cardEl.style.backdropFilter = 'none';
-      cardEl.style.transform = 'none';
-      cardEl.style.border = '1px solid rgba(99, 102, 241, 0.3)';
-
-      const canvas = await html2canvas(cardEl, {
-        scale: 1,
-        useCORS: true,
-        logging: false
-      });
-
-      cardEl.style.background = originalStyles.background;
-      cardEl.style.backdropFilter = originalStyles.backdropFilter;
-      cardEl.style.transform = originalStyles.transform;
-      cardEl.style.border = originalStyles.border;
-
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        const file = new File([blob], 'resultado-loteria.png', { type: 'image/png' });
-
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              files: [file],
-              title: 'Resultado da Loteria'
-            });
-          } catch (err) {
-            console.log('Compartilhamento cancelado');
-          }
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'resultado-loteria.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          
-          btn.innerHTML = '✓ Baixado';
-          setTimeout(() => {
-            btn.innerHTML = originalHtml;
-            btn.disabled = false;
-          }, 2000);
-          return;
-        }
-      }, 'image/png');
-    } catch (err) {
-      console.error('Erro ao gerar imagem:', err);
-      window.open(`https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`, '_blank');
-    } finally {
-      if (!btn.innerHTML.includes('Baixado')) {
-        btn.innerHTML = originalHtml;
-        btn.disabled = false;
-      }
-    }
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`,
+      '_blank'
+    );
   });
 
   function mudarData(delta: number) {
