@@ -258,29 +258,35 @@ const { pageSlug } = Astro.props;
     if (!cardEl) return;
 
     const originalHtml = btn.innerHTML;
-    btn.innerHTML = 'Gerando imagem...';
+    btn.innerHTML = 'Gerando...';
     btn.disabled = true;
 
     try {
       const canvas = await html2canvas(cardEl, {
-        backgroundColor: '#0a0a1c',
-        scale: 2,
+        backgroundColor: '#0C0C24',
+        scale: 1.5,
         useCORS: true,
         logging: false,
-        borderRadius: '16px'
+        onclone: (clonedDoc) => {
+          const clonedCard = clonedDoc.querySelector('.result-card');
+          if (clonedCard) {
+            clonedCard.style.background = '#0C0C24';
+            clonedCard.style.backdropFilter = 'none';
+            clonedCard.style.transform = 'none';
+            clonedCard.style.border = '1px solid rgba(99, 102, 241, 0.3)';
+          }
+        }
       });
 
       canvas.toBlob(async (blob) => {
         if (!blob) return;
         const file = new File([blob], 'resultado-loteria.png', { type: 'image/png' });
-        const textoZap = cardEl.getAttribute('data-texto-zap') || 'Confira o resultado!';
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           try {
             await navigator.share({
               files: [file],
-              title: 'Resultado da Loteria',
-              text: textoZap
+              title: 'Resultado da Loteria'
             });
           } catch (err) {
             console.log('Compartilhamento cancelado');
@@ -294,15 +300,23 @@ const { pageSlug } = Astro.props;
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          alert('📸 Imagem salva na pasta Downloads!\nAnexe-a manualmente no seu WhatsApp.');
+          
+          btn.innerHTML = '✓ Baixado';
+          setTimeout(() => {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+          }, 2000);
+          return;
         }
       }, 'image/png');
     } catch (err) {
       console.error('Erro ao gerar imagem:', err);
       window.open(`https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`, '_blank');
     } finally {
-      btn.innerHTML = originalHtml;
-      btn.disabled = false;
+      if (!btn.innerHTML.includes('Baixado')) {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+      }
     }
   });
 
