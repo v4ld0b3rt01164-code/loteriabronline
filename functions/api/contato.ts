@@ -61,7 +61,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         },
         body: JSON.stringify({
           from: 'Contato LoteriaBR <contato@loteriabr.online>',
-          to: 'valdo@loteriabr.online',
+          to: 'loteriabronline@gmail.com',
           reply_to: body.email,
           subject: `Novo contato de ${nome}`,
           html: `
