@@ -17,7 +17,7 @@
   }
 
   :root {
-    --header-h: 135px;
+    --header-h: 175px;
     --footer-h: 56px;
     --glass-bg: rgba(12, 12, 36, 0.6);
     --glass-border: rgba(99, 102, 241, 0.12);
@@ -271,11 +271,11 @@
 
   .result-card {
     @apply rounded-2xl p-0 overflow-hidden transition-all duration-500;
-    background: rgba(10, 10, 28, 0.45);
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    background: rgba(10, 10, 28, 0.55);
+    border: 1px solid rgba(99, 102, 241, 0.15);
     backdrop-filter: blur(14px);
     animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.04);
   }
 
   .result-card:hover {

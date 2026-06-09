@@ -153,11 +153,11 @@ const { pageSlug } = Astro.props;
       infoCol.className = 'flex flex-col min-w-0';
 
       const labelSpan = document.createElement('span');
-      labelSpan.className = 'text-xs uppercase font-semibold text-text-muted tracking-wider';
+      labelSpan.className = 'text-[13px] md:text-xs uppercase font-semibold text-text-muted tracking-wider';
       labelSpan.textContent = '1º Prêmio';
 
       const valorSpan = document.createElement('span');
-      valorSpan.className = 'text-2xl md:text-3xl font-black tracking-wider gradient-text';
+      valorSpan.className = 'text-[26px] md:text-3xl font-black tracking-wider gradient-text';
       valorSpan.textContent = primeiro.milhar;
 
       infoCol.appendChild(labelSpan);
@@ -183,28 +183,28 @@ const { pageSlug } = Astro.props;
       topRow.appendChild(animalCol);
 
       const table = document.createElement('table');
-      table.className = 'w-full text-sm md:text-base border-collapse';
+      table.className = 'w-full text-[15px] md:text-base border-collapse';
 
       const tbody = document.createElement('tbody');
 
       for (const r of resultadosExibir) {
         const tr = document.createElement('tr');
-        tr.className = 'border-b border-white/5 py-1';
+        tr.className = 'border-b border-white/10';
         const rowIdx = resultadosExibir.indexOf(r);
         if (rowIdx % 2 === 0) {
-          tr.style.background = 'rgba(148, 163, 184, 0.03)';
+          tr.style.background = 'rgba(148, 163, 184, 0.04)';
         }
 
         const td1 = document.createElement('td');
-        td1.className = 'text-text-secondary font-medium py-2.5 px-2 w-[35%]';
+        td1.className = 'text-text-secondary font-medium py-3 px-2 w-[35%]';
         td1.textContent = r.posicao;
 
         const td2 = document.createElement('td');
-        td2.className = 'font-bold text-accent-light text-center py-2.5 px-1 w-[30%]';
+        td2.className = 'font-bold text-accent-light text-center py-3 px-1 w-[30%]';
         td2.textContent = r.milhar;
 
         const td3 = document.createElement('td');
-        td3.className = 'text-text-secondary font-medium text-right py-2.5 px-2 w-[35%]';
+        td3.className = 'text-text-secondary font-medium text-right py-3 px-2 w-[35%]';
         td3.textContent = r.grupo > 0 ? String(r.grupo) : '-';
 
         tr.appendChild(td1);
