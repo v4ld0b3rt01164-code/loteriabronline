@@ -249,15 +249,61 @@ const { pageSlug } = Astro.props;
     }
   }
 
-  resultContainer.addEventListener('click', (e) => {
+  import html2canvas from 'html2canvas';
+
+  resultContainer.addEventListener('click', async (e) => {
     const btn = (e.target as Element).closest('.share-btn');
     if (!btn) return;
-    const cardEl = btn.closest('[data-texto-zap]') as HTMLElement;
+    const cardEl = btn.closest('.result-card') as HTMLElement;
     if (!cardEl) return;
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`,
-      '_blank'
-    );
+
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = 'Gerando imagem...';
+    btn.disabled = true;
+
+    try {
+      const canvas = await html2canvas(cardEl, {
+        backgroundColor: '#0a0a1c',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        borderRadius: '16px'
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], 'resultado-loteria.png', { type: 'image/png' });
+        const textoZap = cardEl.getAttribute('data-texto-zap') || 'Confira o resultado!';
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Resultado da Loteria',
+              text: textoZap
+            });
+          } catch (err) {
+            console.log('Compartilhamento cancelado');
+          }
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'resultado-loteria.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          alert('📸 Imagem salva na pasta Downloads!\nAnexe-a manualmente no seu WhatsApp.');
+        }
+      }, 'image/png');
+    } catch (err) {
+      console.error('Erro ao gerar imagem:', err);
+      window.open(`https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`, '_blank');
+    } finally {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }
   });
 
   function mudarData(delta: number) {
