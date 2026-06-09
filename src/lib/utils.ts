@@ -63,7 +63,7 @@ export interface ApiResponse {
 
 export function nomeExibicao(nomeLoteria: string): string {
   const partes = nomeLoteria.split(' - ');
-  const nomeBase = partes[0].replace('RIO DE JANEIRO', 'RJ');
+  const nomeBase = partes[0].replace('RIO DE JANEIRO', 'RJ').replace('BR', 'LBR');
   const horario = partes[1] || '';
   return horario ? `${nomeBase} - ${horario}` : nomeBase;
 }
