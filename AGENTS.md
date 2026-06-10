@@ -46,7 +46,7 @@ Defined in `src/styles/global.css` as `.card-grid`
 | Index | `index` | BR, RIO DE JANEIRO, FEDERAL |
 | Look | `look` | GOIÁS |
 | Nacional | `nacional` | NACIONAL |
-| Bahia | `bahia` | BAHIA (shows only 5 prizes) |
+| Bahia | `bahia` | BAHIA |
 | São Paulo | `saopaulo` | SÃO PAULO |
 | Federal | `federal` | FEDERAL |
 
@@ -75,16 +75,17 @@ Defined in `src/styles/global.css` as `.card-grid`
 
 ## Gotchas
 - `API_URL` in `constants.ts` uses `window.API_URL` fallback for dev
-- Bahia page limits to 5 prizes (`isBA` flag in DateNav)
 - Date logic in `getDataInteligente()` uses America/Sao_Paulo timezone, shifts to previous day before 1 AM
 - Animal images loaded from `/animais-webp/{grupo}.webp` (1-25)
 - Share button uses WhatsApp deep link with formatted text
 - Auto-refresh every 15 min when tab visible
-- **Logo**: `public/logo.webp` (1134x304, RGBA with alpha). Source: `public/logo.png` converted via sharp (`sharp(input).webp({quality:90, alphaQuality:90})`). Mobile: 65px height, Desktop: 100px height
+- **Logo**: `public/logo.webp` (1134x304, RGBA with alpha). Source: `public/logo.png` converted via sharp (`sharp(input).webp({quality:90, alphaQuality:90})`). Mobile: 78px height, Desktop: 100px height
 - **Table dividers**: Use `border-b border-white/5` on `<tr>` instead of `divide-y` on `<tbody>` to avoid vertical column lines. Table must use `border-collapse` (Tailwind preflight default) — do NOT use `border-separate`.
-- **Card background**: `rgba(10, 10, 28, 0.45)` with `blur(14px)` and subtle shadow — elegant distinction against `#050510` body background
-- **Mobile header**: `--header-h: 135px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
+- **Card background**: `rgba(10, 10, 28, 0.55)` with `blur(14px)`, border `rgba(99, 102, 241, 0.15)`, and inset shadow — elegant distinction against `#050510` body background
+- **Mobile header**: `--header-h: 175px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
 - **Mobile select**: `max-w-none w-auto` (no width constraint) to avoid text clipping. Desktop: `md:max-w-[220px]`
+- **WhatsApp share**: Uses formatted text with 🍀 clover emoji (no calendar emoji), bolding, and separator. "BR" displayed as "LBR" via `utils.ts` `nomeExibicao()` function
+- **Contact form**: Sends to `loteriabronline@gmail.com` from `contato@loteriabr.online`. Returns explicit error if `RESEND_API_KEY` not configured (does NOT return success without sending)
 
 ## Verification
 ```bash

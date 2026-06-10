@@ -48,7 +48,6 @@ const { pageSlug } = Astro.props;
   const loadingState = document.getElementById('loadingState')!;
 
   const filterList = FILTROS[pageSlug] || FILTROS['index'];
-  const isBA = pageSlug === 'bahia';
 
   inputData.value =
     new URLSearchParams(window.location.search).get('data') ||
@@ -120,9 +119,7 @@ const { pageSlug } = Astro.props;
     const dataFormatada = formatarDataBR(dataAtual);
 
     for (const loteria of lista) {
-      const resultadosExibir = isBA
-        ? loteria.resultados.slice(0, 5)
-        : loteria.resultados;
+      const resultadosExibir = loteria.resultados;
       const primeiro = resultadosExibir[0] || { milhar: '----', grupo: 0 };
       const animal = ANIMAIS[primeiro.grupo] || 'Desconhecido';
       const exibicao = nomeExibicao(loteria.nome_loteria);

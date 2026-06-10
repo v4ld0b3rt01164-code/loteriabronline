@@ -52,36 +52,42 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     const apiKey = context.env.RESEND_API_KEY;
 
-    if (apiKey) {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'Contato LoteriaBR <contato@loteriabr.online>',
-          to: 'loteriabronline@gmail.com',
-          reply_to: body.email,
-          subject: `Novo contato de ${nome}`,
-          html: `
-            <h2>Novo contato via site</h2>
-            <p><strong>Nome:</strong> ${nome}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Mensagem:</strong></p>
-            <p>${mensagem.replace(/\n/g, '<br>')}</p>
-          `,
-        }),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        console.error('Resend error:', errText);
-        return jsonResponse({ erro: 'Erro ao enviar email' }, 500);
-      }
-    } else {
-      console.warn('RESEND_API_KEY não configurada — email não enviado');
+    if (!apiKey) {
+      console.error('ERRO: RESEND_API_KEY não configurada');
+      return jsonResponse({ erro: 'Serviço de email não configurado' }, 500);
     }
+
+    console.log('Enviando email para:', body.email);
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Contato LoteriaBR <contato@loteriabr.online>',
+        to: 'loteriabronline@gmail.com',
+        reply_to: body.email,
+        subject: `Novo contato de ${nome}`,
+        html: `
+          <h2>Novo contato via site</h2>
+          <p><strong>Nome:</strong> ${nome}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Mensagem:</strong></p>
+          <p>${mensagem.replace(/\n/g, '<br>')}</p>
+        `,
+      }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Resend error:', res.status, errText);
+      return jsonResponse({ erro: 'Erro ao enviar email' }, 500);
+    }
+
+    const result = await res.json();
+    console.log('Email enviado com sucesso:', result.id);
 
     return jsonResponse({ message: 'Mensagem enviada com sucesso!' }, 200);
   } catch (e) {

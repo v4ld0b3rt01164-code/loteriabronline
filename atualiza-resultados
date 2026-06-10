@@ -1,0 +1,389 @@
+export default {
+  async scheduled(event, env, ctx) {
+    const now = new Date(event.scheduledTime);
+    const minuto = now.getMinutes();
+    const modulo = minuto % 14;
+
+    const tarefas = [
+      { sigla: 'RJ', modulo: 0, fn: executarRJ },
+      { sigla: 'LN', modulo: 2, fn: executarNacional },
+      { sigla: 'LOOK', modulo: 4, fn: executarLOOK },
+      { sigla: 'SP', modulo: 6, fn: executarSP },
+      { sigla: 'LBR', modulo: 8, fn: executarLBR },
+      { sigla: 'BA', modulo: 10, fn: executarBA },
+      { sigla: 'FEDERAL', modulo: 12, fn: executarFederal },
+    ];
+
+    const tarefa = tarefas.find(t => t.modulo === modulo);
+    if (!tarefa) return;
+
+    console.log(`[${tarefa.sigla}] Iniciando captura (minuto ${minuto})...`);
+    await tarefa.fn(env);
+  },
+
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    if (path.startsWith('/trigger/')) {
+      const sigla = path.split('/').pop().toUpperCase();
+      const mapa = { RJ: executarRJ, LN: executarNacional, LOOK: executarLOOK, SP: executarSP, LBR: executarLBR, BA: executarBA, FEDERAL: executarFederal };
+      const fn = mapa[sigla];
+      if (!fn) {
+        return new Response(JSON.stringify({ erro: `Sigla inválida: ${sigla}` }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      }
+      try {
+        await fn(env);
+        return new Response(JSON.stringify({ ok: true, sigla, message: `Scraping de ${sigla} concluído. Verifique os logs.` }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ erro: true, sigla, message: e.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    if (path === '/api/listar') {
+      return handleApiListar(request, env);
+    }
+
+    return new Response(JSON.stringify({ status: 'ok', worker: 'motor-cron', rotas: ['/', '/api/listar', '/trigger/RJ', '/trigger/LN', '/trigger/LOOK', '/trigger/SP', '/trigger/LBR', '/trigger/BA', '/trigger/FEDERAL'] }), {
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
+  }
+};
+
+async function executarRJ(env) { await executarScraping(env, 'RJ', 'https://www.resultadofacil.com.br/resultado-do-jogo-do-bicho/rj', 'resultados_RJ', extrairRJ); }
+async function executarSP(env) { await executarScraping(env, 'SP', 'https://www.resultadofacil.com.br/resultado-do-jogo-do-bicho/sp', 'resultados_SP', extrairSP); }
+async function executarBA(env) { await executarScraping(env, 'BA', 'https://www.resultadofacil.com.br/resultado-do-jogo-do-bicho/ba', 'resultados_BA', extrairBA); }
+async function executarLBR(env) { await executarScraping(env, 'LBR', 'https://www.resultadofacil.com.br/resultado-do-jogo-do-bicho/df', 'resultados_LBR', extrairLBR); }
+async function executarLOOK(env) { await executarScraping(env, 'LOOK', 'https://www.resultadofacil.com.br/resultado-do-jogo-do-bicho/go', 'resultados_LOOK', extrairLOOK); }
+async function executarNacional(env) { await executarScraping(env, 'NACIONAL', 'https://www.resultadofacil.com.br/resultados-loteria-nacional-de-hoje', 'resultados_LN', extrairNacional); }
+async function executarFederal(env) { await executarScraping(env, 'FEDERAL', 'https://www.megaloterias.com.br/loteria-federal/resultados', 'resultados_FEDERAL', extrairFederal); }
+
+async function executarScraping(env, sigla, url, kvKey, parseFn) {
+  const novos = [];
+
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+    });
+    if (!res.ok) { console.warn(`⚠️ [${sigla}] HTTP ${res.status}`); return; }
+
+    const html = await res.text();
+    const dataPagina = extrairDataDoHTML(html, sigla);
+    if (!dataPagina) { console.warn(`⚠️ [${sigla}] Data não encontrada`); return; }
+
+    const resultados = parseFn(html);
+    console.log(`📊 [${sigla}] ${resultados.length} resultados`);
+
+    for (const r of resultados) {
+      novos.push({
+        id: crypto.randomUUID(),
+        origem: sigla,
+        data: dataPagina,
+        horario: normalizarHorario(r.extracao),
+        premios: r.premios,
+        criado_em: new Date().toISOString()
+      });
+    }
+  } catch (e) { console.error(`❌ [${sigla}] ${e.message}`); return; }
+
+  let historico = [];
+  let stored = null;
+  try {
+    stored = await env.RESULTADOS.get(kvKey, { type: 'json' });
+    if (stored) historico = stored;
+  } catch (e) { console.warn(`⚠️ [${sigla}] KV vazio ou erro ao ler`); }
+
+  const todos = [...novos, ...historico];
+  const unicos = [];
+  const vistos = new Set();
+  for (const item of todos) {
+    const chave = `${item.data}|${item.horario}|${item.origem}`;
+    if (!vistos.has(chave)) { vistos.add(chave); unicos.push(item); }
+  }
+  unicos.sort((a, b) => {
+    if (a.data !== b.data) return a.data.localeCompare(b.data);
+    if (a.horario !== b.horario) return a.horario.localeCompare(b.horario);
+    return a.origem.localeCompare(b.origem);
+  });
+
+  if (novos.length > 0 || !stored) {
+    await env.RESULTADOS.put(kvKey, JSON.stringify(unicos, null, 2));
+    console.log(`💾 [${sigla}] ${unicos.length} registros salvos`);
+  }
+}
+
+function extrairResultadoFacil(html, opts = {}) {
+  const { headerRegex, headerFilter, rejectFirstZero = false, maxPremios = 5 } = opts;
+  html = html.replace(/<a[\s\S]*?<\/a>/gi, '');
+  const resultados = [];
+  const blocos = html.split(/<h3[^>]*>/gi);
+  for (let i = 1; i < blocos.length; i++) {
+    const cabecalho = blocos[i].split('</h3>')[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/federal/i.test(cabecalho)) continue;
+    if (headerFilter && !headerFilter(cabecalho)) continue;
+
+    let extracaoNome;
+    if (headerRegex) {
+      const m = cabecalho.match(headerRegex);
+      if (!m) continue;
+      extracaoNome = m[1] || m[0];
+    } else {
+      if (!cabecalho.includes('Resultado do Jogo do Bicho') || cabecalho.includes('1º ao 10º')) continue;
+      const texto = cabecalho.replace('Resultado do Jogo do Bicho', '').trim();
+      const partes = texto.split(',').map(p => p.trim()).filter(p => p.length > 0 && p.length < 40);
+      if (partes.length < 2) continue;
+      extracaoNome = `${partes[0]} ${partes[1]}`;
+    }
+
+    const tbodyMatch = blocos[i].match(/<tbody>([\s\S]*?)<\/tbody>/i);
+    if (!tbodyMatch) continue;
+    const linhas = tbodyMatch[1].match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
+    const premios = [];
+    for (const linha of linhas) {
+      if (linha.includes('soma') || linha.includes('mult')) continue;
+      const td = linha.match(/<td[^>]*>(\d{4})<\/td>/i);
+      if (td && premios.length < maxPremios) premios.push(td[1]);
+    }
+    if (premios.length === maxPremios && premios[0] !== '' && (!rejectFirstZero || premios[0] !== '0000')) {
+      resultados.push({ extracao: extracaoNome, premios });
+    }
+  }
+  return resultados;
+}
+
+function extrairRJ(html) { return extrairResultadoFacil(html, { rejectFirstZero: true }); }
+function extrairSP(html) { return extrairResultadoFacil(html, { rejectFirstZero: true }); }
+function extrairLOOK(html) { return extrairResultadoFacil(html, { headerRegex: /LOOK\s*-\s*GOI[AÁ]S,?\s*([\d]+h)/i, rejectFirstZero: true }); }
+function extrairBA(html) { return extrairResultadoFacil(html, { headerRegex: /(\d{1,2}h)\s*-\s*(BA)/i, headerFilter: (h) => !h.match(/MALUCA/i), maxPremios: 10 }); }
+function extrairLBR(html) { return extrairResultadoFacil(html, { headerRegex: /LBR,?\s*([\d:]+(?:h|H)?)/i }); }
+
+function extrairNacional(html) {
+  html = html.replace(/<a[\s\S]*?<\/a>/gi, '');
+  const resultados = [];
+  const regex = /<h3[^>]*>([\s\S]*?(?:Nacional|LN)[\s\S]*?(\d{1,2}:\d{2})[\s\S]*?)<\/h3>[\s\S]*?<table[^>]*>([\s\S]*?)<\/table>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    const horarioRaw = match[2];
+    const tabela = match[3];
+    const horario = `${horarioRaw.padStart(2, '0')}:00`;
+    const premios = [];
+    const tdRegex = /<td[^>]*>\s*(\d{4})\s*<\/td>/gi;
+    let tdMatch;
+    while ((tdMatch = tdRegex.exec(tabela)) !== null) {
+      if (premios.length < 5) premios.push(tdMatch[1]);
+    }
+    const HORARIOS_NACIONAL = ['02:00', '08:00', '10:00', '12:00', '15:00', '17:00', '21:00', '23:00'];
+    const horaStr = horario.substring(0, 5);
+    if (premios.length === 5 && HORARIOS_NACIONAL.includes(horaStr)) {
+      resultados.push({ extracao: `NACIONAL - ${horaStr}`, premios });
+    }
+  }
+  return resultados;
+}
+
+function extrairFederal(html) {
+  const resultados = [];
+  try {
+    const premios = [];
+    const premiosRegex = /<div[^>]*class="[^"]*result__federal-item__val[^"]*lot-bg[^"]*"[^>]*>(\d+)<\/div>/gi;
+    let premioMatch;
+    while ((premioMatch = premiosRegex.exec(html)) !== null && premios.length < 5) {
+      const milhar = premioMatch[1].trim();
+      if (/^\d{5}$/.test(milhar)) {
+        premios.push(milhar);
+      } else {
+        console.warn(`⚠️ [FEDERAL] Valor inválido (${milhar}), esperado 5 dígitos`);
+      }
+    }
+    if (premios.length === 5) {
+      resultados.push({ extracao: 'FEDERAL 20:00', premios });
+      console.log(`✅ [FEDERAL] Capturado | Prêmios: [${premios.join(', ')}]`);
+    } else {
+      console.warn(`⚠️ [FEDERAL] ${premios.length}/5 prêmios válidos`);
+    }
+  } catch (e) {
+    console.error(`❌ [FEDERAL] Erro ao parsear: ${e.message}`);
+  }
+  return resultados;
+}
+
+function normalizarHorario(extracao) {
+  const match = extracao.match(/(\d{1,2}):(\d{2})/);
+  if (match) return `${match[1].padStart(2, '0')}:${match[2]}:00`;
+  const matchH = extracao.match(/(\d{1,2})h/i);
+  if (matchH) return `${matchH[1].padStart(2, '0')}:00:00`;
+  return '00:00:00';
+}
+
+function extrairDataDoHTML(html, sigla) {
+  if (sigla === 'FEDERAL') {
+    const megaMatch = html.match(/result__draw-date[^>]*>.*?<strong>(\d{2}\/\d{2}\/\d{4})/i);
+    if (megaMatch) {
+      const parts = megaMatch[1].split('/');
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+  }
+  const m = html.match(/<title[^>]*>.*?(\d{2})\/(\d{2})\/(\d{4}).*?<\/title>/i);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+  return null;
+}
+
+function grupoPorMilhar(milhar) {
+  const final = parseInt(milhar.slice(-2), 10);
+  if (final === 0 || final >= 97) return 25;
+  return Math.floor((final - 1) / 4) + 1;
+}
+
+function dataBR() {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric', month: '2-digit', day: '2-digit'
+  });
+  const parts = formatter.formatToParts(now);
+  const getParte = (tipo) => (parts.find(p => p.type === tipo) || {}).value || '';
+  return `${getParte('year')}-${getParte('month')}-${getParte('day')}`;
+}
+
+async function handleApiListar(request, env) {
+  const url = new URL(request.url);
+  const dataFilter = url.searchParams.get('data') || dataBR();
+
+  const KV_KEYS = [
+    'resultados_RJ', 'resultados_SP', 'resultados_BA',
+    'resultados_LBR', 'resultados_LOOK', 'resultados_LN',
+    'resultados_FEDERAL'
+  ];
+
+  const leituras = KV_KEYS.map(async (key) => {
+    try {
+      const stored = await env.RESULTADOS.get(key, { type: 'json' });
+      return (stored && Array.isArray(stored)) ? stored : [];
+    } catch (e) { return []; }
+  });
+  const arrays = await Promise.all(leituras);
+  const todosRegistros = arrays.flat();
+
+  const LOTERIAS_VERTICALIZACAO = ['SP'];
+  const LOTERIAS_10_PREMIOS = ['BA'];
+
+  const filtrados = todosRegistros.filter(r => r.data === dataFilter);
+
+  const agrupados = {};
+  for (const r of filtrados) {
+    const chave = `${r.origem}|${r.horario}`;
+    if (!agrupados[chave]) {
+      agrupados[chave] = { origem: r.origem, horario: r.horario.substring(0, 5), premios: [] };
+    }
+    for (const p of r.premios) {
+      if (!agrupados[chave].premios.includes(p)) agrupados[chave].premios.push(p);
+    }
+  }
+
+  const NOMES_LOTERIAS = {
+    'NACIONAL': 'NACIONAL', 'FEDERAL': 'FEDERAL', 'RJ': 'RIO DE JANEIRO',
+    'SP': 'SÃO PAULO', 'BA': 'BAHIA', 'LBR': 'BR', 'LOOK': 'GOIÁS'
+  };
+
+  const loterias = [];
+
+  for (const item of Object.values(agrupados)) {
+    const is10 = LOTERIAS_10_PREMIOS.includes(item.origem);
+    const maxP = is10 ? 10 : 5;
+    let premiosBase = item.premios.slice(0, maxP);
+    while (premiosBase.length < maxP) premiosBase.push('0000');
+
+    const resultados = [];
+
+    for (let i = 0; i < maxP; i++) {
+      resultados.push({
+        posicao: `${i + 1}º`,
+        milhar: premiosBase[i],
+        grupo: grupoPorMilhar(premiosBase[i])
+      });
+    }
+
+    if (!is10) {
+      if (LOTERIAS_VERTICALIZACAO.includes(item.origem)) {
+        const p1 = premiosBase[0].padStart(4, '0');
+        const p2 = premiosBase[1].padStart(4, '0');
+        const p3 = premiosBase[2].padStart(4, '0');
+        const p4 = premiosBase[3].padStart(4, '0');
+
+        const m6 = p1[0] + p2[0] + p3[0] + p4[0];
+        const m7 = p1[1] + p2[1] + p3[1] + p4[1];
+        const m8 = p1[2] + p2[2] + p3[2] + p4[2];
+        const m9 = p1[3] + p2[3] + p3[3] + p4[3];
+
+        resultados.push({ posicao: '6º', milhar: m6, grupo: grupoPorMilhar(m6) });
+        resultados.push({ posicao: '7º', milhar: m7, grupo: grupoPorMilhar(m7) });
+        resultados.push({ posicao: '8º', milhar: m8, grupo: grupoPorMilhar(m8) });
+        resultados.push({ posicao: '9º', milhar: m9, grupo: grupoPorMilhar(m9) });
+
+        const somaMilhares = resultados.reduce((acc, r) => acc + parseInt(r.milhar, 10), 0);
+        const m10 = String(somaMilhares);
+        resultados.push({ posicao: '10º', milhar: m10, grupo: grupoPorMilhar(m10) });
+
+      } else {
+        const soma = premiosBase.reduce((acc, val) => acc + parseInt(val, 10), 0);
+        const m6 = String(soma).padStart(4, '0');
+        resultados.push({ posicao: '6º', milhar: m6, grupo: grupoPorMilhar(m6) });
+
+        const prod7 = parseInt(premiosBase[0], 10) * parseInt(premiosBase[1], 10);
+        const prod7Str = String(prod7).padStart(9, '0');
+        const m7 = prod7Str.slice(-6, -3);
+        resultados.push({ posicao: '7º', milhar: m7, grupo: grupoPorMilhar(m7) });
+
+        const prod8 = parseInt(premiosBase[0], 10) * 4;
+        const m8 = String(prod8).slice(-4).padStart(4, '0');
+        resultados.push({ posicao: '8º', milhar: m8, grupo: grupoPorMilhar(m8) });
+      }
+    }
+
+    const nomeExibicao = NOMES_LOTERIAS[item.origem] || item.origem;
+    const [h, m] = item.horario.split(':').map(Number);
+    const horarioFormatado = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+
+    loterias.push({
+      nome_loteria: `${nomeExibicao} - ${horarioFormatado}`,
+      resultados
+    });
+  }
+
+  loterias.sort((a, b) => {
+    const reg = /(\d{2}):(\d{2})/;
+    const matchA = a.nome_loteria.match(reg);
+    const matchB = b.nome_loteria.match(reg);
+    if (!matchA || !matchB) return 0;
+    const minsA = parseInt(matchA[1]) * 60 + parseInt(matchA[2]);
+    const minsB = parseInt(matchB[1]) * 60 + parseInt(matchB[2]);
+    return minsA - minsB;
+  });
+
+  const dateObj = new Date(dataFilter + 'T12:00:00');
+  const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
+  const response = new Response(JSON.stringify({
+    data: {
+      dia_semana: diasSemana[dateObj.getDay()],
+      data_formatada: dateObj.toLocaleDateString('pt-BR')
+    },
+    loterias
+  }), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Cache-Control': 'public, s-maxage=120'
+    }
+  });
+
+  return response;
+}
