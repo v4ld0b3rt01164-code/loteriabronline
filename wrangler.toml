@@ -1,0 +1,23 @@
+name = "atualiza-resultados"
+main = "atualiza-resultados"
+compatibility_date = "2024-01-01"
+compatibility_flags = []
+
+[[kv_namespaces]]
+binding = "RESULTADOS"
+id = "3dffd78b43d34e5db66b3149db287821"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
