@@ -118,7 +118,7 @@ async function executarScraping(env, sigla, url, kvKey, parseFn) {
 }
 
 function extrairResultadoFacil(html, opts = {}) {
-  const { headerRegex, headerFilter, rejectFirstZero = false, maxPremios = 5 } = opts;
+  const { headerRegex, headerFilter, rejectFirstZero = false, maxPremios = 5, minPremios = 5 } = opts;
   html = html.replace(/<a[\s\S]*?<\/a>/gi, '');
   const resultados = [];
   const blocos = html.split(/<h3[^>]*>/gi);
@@ -149,7 +149,7 @@ function extrairResultadoFacil(html, opts = {}) {
       const td = linha.match(/<td[^>]*>(\d{4})<\/td>/i);
       if (td && premios.length < maxPremios) premios.push(td[1]);
     }
-    if (premios.length === maxPremios && premios[0] !== '' && (!rejectFirstZero || premios[0] !== '0000')) {
+    if (premios.length >= minPremios && premios[0] !== '' && (!rejectFirstZero || premios[0] !== '0000')) {
       resultados.push({ extracao: extracaoNome, premios });
     }
   }
@@ -159,7 +159,7 @@ function extrairResultadoFacil(html, opts = {}) {
 function extrairRJ(html) { return extrairResultadoFacil(html, { rejectFirstZero: true }); }
 function extrairSP(html) { return extrairResultadoFacil(html, { rejectFirstZero: true }); }
 function extrairLOOK(html) { return extrairResultadoFacil(html, { headerRegex: /LOOK\s*-\s*GOI[AÁ]S,?\s*([\d]+h)/i, rejectFirstZero: true }); }
-function extrairBA(html) { return extrairResultadoFacil(html, { headerRegex: /(\d{1,2}h)\s*-\s*(BA)/i, headerFilter: (h) => !h.match(/MALUCA/i), maxPremios: 10 }); }
+function extrairBA(html) { return extrairResultadoFacil(html, { headerRegex: /(\d{1,2}h)\s*-\s*(BA)/i, headerFilter: (h) => !h.match(/MALUCA/i), minPremios: 5, maxPremios: 10 }); }
 function extrairLBR(html) { return extrairResultadoFacil(html, { headerRegex: /LBR,?\s*([\d:]+(?:h|H)?)/i }); }
 
 function extrairNacional(html) {
@@ -296,11 +296,13 @@ async function handleApiListar(request, env) {
     const is10 = LOTERIAS_10_PREMIOS.includes(item.origem);
     const maxP = is10 ? 10 : 5;
     let premiosBase = item.premios.slice(0, maxP);
-    while (premiosBase.length < maxP) premiosBase.push('0000');
+    if (!is10) {
+      while (premiosBase.length < maxP) premiosBase.push('0000');
+    }
 
     const resultados = [];
 
-    for (let i = 0; i < maxP; i++) {
+    for (let i = 0; i < premiosBase.length; i++) {
       resultados.push({
         posicao: `${i + 1}º`,
         milhar: premiosBase[i],
