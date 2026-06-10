@@ -17,7 +17,7 @@ const { pageSlug } = Astro.props;
   <input
     type="date"
     id="inputData"
-    class="flex-1 bg-transparent text-text-primary px-1.5 py-2 font-mono font-semibold text-center cursor-pointer text-xs md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:opacity-0"
+    class="flex-1 bg-transparent text-text-primary px-1.5 py-2 font-mono font-semibold text-center cursor-pointer text-xs md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
     aria-label="Selecionar data"
   />
   <button id="nextDate" class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-l border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none" aria-label="Próxima data">

@@ -16,8 +16,40 @@ npm run preview   # Preview build locally
 - **Framework**: Astro 6 (static output)
 - **Styling**: Tailwind CSS v3 with custom design system
 - **TypeScript**: Strict mode
-- **API**: External Workers KV endpoint (`https://atualiza-resultados.v4ld0b3rt01164.workers.dev/api/listar`)
+- **API**: Cloudflare Worker (`atualiza-resultados` in repo root) serves lottery data from Workers KV
+- **KV Namespace**: `RESULTADOS` (ID: `3dffd78b43d34e5db66b3149db287821`)
 - **Functions**: Cloudflare Pages Function for contact form (`/api/contato`)
+
+## Worker Deployment (`atualiza-resultados`)
+The file `atualiza-resultados` at repo root is a **Cloudflare Worker** (not an Astro page). Deploy via Cloudflare REST API:
+
+```bash
+# Copy with .js extension for upload
+cp atualiza-resultados /tmp/atualiza-resultados-worker.js
+
+# Create metadata JSON (must include KV binding)
+cat > /tmp/deploy-meta.json << 'EOF'
+{
+  "main_module": "atualiza-resultados-worker.js",
+  "compatibility_date": "2024-01-01",
+  "bindings": [
+    {
+      "name": "RESULTADOS",
+      "type": "kv_namespace",
+      "namespace_id": "3dffd78b43d34e5db66b3149db287821"
+    }
+  ]
+}
+EOF
+
+# Deploy (requires token with Workers:Edit + KV:Edit)
+curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e468dd49339b8be/workers/scripts/atualiza-resultados" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -F 'metadata=@/tmp/deploy-meta.json;type=application/json' \
+  -F 'atualiza-resultados-worker.js=@/tmp/atualiza-resultados-worker.js;type=application/javascript+module'
+```
+
+**CRITICAL**: The API token MUST have both `Workers:Edit` AND `KV:Edit` permissions. Two separate tokens won't work — the deploy API requires a single token with both. Without KV:Edit, the binding gets silently removed and the worker breaks (returns empty data).
 
 ## Key Directories
 ```
@@ -56,6 +88,11 @@ Defined in `src/styles/global.css` as `.card-grid`
 3. Filters lotteries by `FILTROS[pageSlug]`
 4. Sorts by time (extracted from lottery name)
 5. Renders cards via `renderizarCards()` into `#resultContainer`
+
+## Lottery Data Rules
+- **BAHIA**: Prizes 1º-10º are ALL drawn (sorteados), never computed. They come raw from scraping and must be stored/displayed as-is. `LOTERIAS_10_PREMIOS` in the worker includes `['BA']` for this.
+- **origem field**: All BA entries in KV must use `origem: "BA"` (not `"BAHIA"`). The scraping function uses `sigla: 'BA'`. If you see `"BAHIA"` in KV data, it's stale — normalize it to `"BA"`.
+- **Other lotteries** (RJ, SP, LBR, LOOK): 5 prizes + computed 6º-8º via math formulas in the worker API.
 
 ## Design System (tailwind.config.mjs)
 - **Colors**: bg `#050510`, surface `#0C0C24`, accent `#6366F1`, violet `#8B5CF6`, pink `#EC4899`
