@@ -20,7 +20,23 @@ npm run preview   # Preview build locally
 - **KV Namespace**: `RESULTADOS` (ID: `3dffd78b43d34e5db66b3149db287821`)
 - **Functions**: Cloudflare Pages Function for contact form (`/api/contato`)
 
-## Worker Deployment (`atualiza-resultados`)
+## Deployment
+
+### Site (Cloudflare Pages)
+- Push to `main` branch → auto-deploys via GitHub integration
+- **Test environment**: `update-gpt.pages.dev` (project: `update-gpt`)
+- **Production**: `loteriabr.online` (project: `loteriabronline`)
+- Build output: `dist/` directory
+- Manual deploy via API (if needed):
+  ```bash
+  curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e468dd49339b8be/pages/projects/update-gpt/deployments" \
+    -H "Authorization: Bearer <TOKEN>" \
+    -F 'branch=main' \
+    -F 'manifest={}' \
+    -F 'dist_dir=@/home/valdo/DEV/update-GPT/dist'
+  ```
+
+### Worker (`atualiza-resultados`)
 The file `atualiza-resultados` at repo root is a **Cloudflare Worker** (not an Astro page). Deploy via Cloudflare REST API:
 
 ```bash
@@ -69,7 +85,7 @@ functions/api/
 - **Mobile (<640px)**: 2 columns (`repeat(2, 1fr)`)
 - **Tablet (640-1024px)**: 3 columns
 - **Desktop (1024-1440px)**: 5 columns
-- **Large (1440px+)**: 6 columns
+- **Large (1440px+)**: 5 columns (same as desktop)
 Defined in `src/styles/global.css` as `.card-grid`
 
 ## Lottery Pages & Filters
@@ -104,12 +120,6 @@ Defined in `src/styles/global.css` as `.card-grid`
 - `@astrojs/sitemap` for sitemap generation
 - `resend.com` API for contact emails (requires `RESEND_API_KEY` env var)
 
-## Deployment
-- Static output to `dist/`
-- Assets in `dist/_assets/`
-- Configured for `https://loteriabr.online`
-- Cloudflare Pages compatible (functions/api)
-
 ## Gotchas
 - `API_URL` in `constants.ts` uses `window.API_URL` fallback for dev
 - Date logic in `getDataInteligente()` uses America/Sao_Paulo timezone, shifts to previous day before 1 AM
@@ -121,6 +131,7 @@ Defined in `src/styles/global.css` as `.card-grid`
 - **Card background**: `rgba(10, 10, 28, 0.55)` with `blur(14px)`, border `rgba(99, 102, 241, 0.15)`, and inset shadow — elegant distinction against `#050510` body background
 - **Mobile header**: `--header-h: 175px` (CSS var in `global.css:20`). Desktop: `180px`. Body has `padding-top: var(--header-h)` in BaseLayout
 - **Mobile select**: `max-w-none w-auto` (no width constraint) to avoid text clipping. Desktop: `md:max-w-[220px]`
+- **Calendar picker**: Use `md:[&::-webkit-calendar-picker-indicator]:invert` for desktop visibility on dark theme. Mobile uses native date picker overlay.
 - **WhatsApp share**: Uses formatted text with 🍀 clover emoji (no calendar emoji), bolding, and separator. "BR" displayed as "LBR" via `utils.ts` `nomeExibicao()` function
 - **Contact form**: Sends to `loteriabronline@gmail.com` from `contato@loteriabr.online`. Returns explicit error if `RESEND_API_KEY` not configured (does NOT return success without sending)
 
