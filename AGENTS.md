@@ -106,18 +106,9 @@ Worker has observability enabled via `wrangler.toml`:
 [observability]
 enabled = true
 head_sampling_rate = 1
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-persist = true
-invocation_logs = true
-
-[observability.traces]
-enabled = false
-persist = true
-head_sampling_rate = 1
 ```
+
+**WARNING**: Do NOT add `[observability.logs]` or `[observability.traces]` sub-tables — they are invalid in the wrangler.toml schema and cause error 1102 (Worker exception) on deploy.
 
 ## Key Directories
 ```
