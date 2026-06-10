@@ -8,7 +8,7 @@ binding = "RESULTADOS"
 id = "3dffd78b43d34e5db66b3149db287821"
 
 [observability]
-enabled = false
+enabled = true
 head_sampling_rate = 1
 
 [observability.logs]
