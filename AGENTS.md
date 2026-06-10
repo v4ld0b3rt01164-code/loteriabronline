@@ -20,25 +20,58 @@ npm run preview   # Preview build locally
 - **KV Namespace**: `RESULTADOS` (ID: `3dffd78b43d34e5db66b3149db287821`)
 - **Functions**: Cloudflare Pages Function for contact form (`/api/contato`)
 
+## Repository Structure
+
+### Single Repo: `loteriabronline`
+- **`main`** branch → Production (`loteriabr.online`)
+- **`loteriabrteste`** branch → Test environment
+
+### Git Remotes
+```bash
+origin    → git@github.com:loteriabronline-coder/update-QWEN.git (legacy, to be deleted)
+production → git@github.com:loteriabronline-coder/loteriabronline.git
+```
+
 ## Deployment
 
 ### Site (Cloudflare Pages)
-- Push to `main` branch → auto-deploys via GitHub integration
-- **Test environment**: `update-gpt.pages.dev` (project: `update-gpt`)
-- **Production**: `loteriabr.online` (project: `loteriabronline`)
-- Build output: `dist/` directory
-- Manual deploy via API (if needed):
-  ```bash
-  curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e468dd49339b8be/pages/projects/update-gpt/deployments" \
-    -H "Authorization: Bearer <TOKEN>" \
-    -F 'branch=main' \
-    -F 'manifest={}' \
-    -F 'dist_dir=@/home/valdo/DEV/update-GPT/dist'
-  ```
+
+#### Production (`loteriabr.online`)
+```bash
+# Auto-deploys on push to main branch
+git push production main
+```
+
+#### Test (`update-gpt.pages.dev`)
+```bash
+# Auto-deploys on push to loteriabrteste branch
+git push production loteriabrteste
+```
+
+#### Manual Deploy via API (if needed)
+```bash
+# For production
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e468dd49339b8be/pages/projects/loteriabronline/deployments" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -F 'branch=main' \
+  -F 'production=true' \
+  -F 'manifest={}' \
+  -F 'dist_dir=@/home/valdo/DEV/update-GPT/dist'
+
+# For test
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e468dd49339b8be/pages/projects/update-gpt/deployments" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -F 'branch=main' \
+  -F 'manifest={}' \
+  -F 'dist_dir=@/home/valdo/DEV/update-GPT/dist'
+```
 
 ### Worker (`atualiza-resultados`)
-The file `atualiza-resultados` at repo root is a **Cloudflare Worker** (not an Astro page). Deploy via Cloudflare REST API:
 
+#### Configuration File
+`wrangler.toml` at repo root contains worker configuration and observability settings.
+
+#### Deploy via Cloudflare REST API
 ```bash
 # Copy with .js extension for upload
 cp atualiza-resultados /tmp/atualiza-resultados-worker.js
@@ -66,6 +99,25 @@ curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/f5f2b9d01f0c51159e
 ```
 
 **CRITICAL**: The API token MUST have both `Workers:Edit` AND `KV:Edit` permissions. Two separate tokens won't work — the deploy API requires a single token with both. Without KV:Edit, the binding gets silently removed and the worker breaks (returns empty data).
+
+#### Observability
+Worker has observability enabled via `wrangler.toml`:
+```toml
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
+```
 
 ## Key Directories
 ```
