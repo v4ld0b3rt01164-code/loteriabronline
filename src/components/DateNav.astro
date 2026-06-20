@@ -1,4 +1,4 @@
----
+﻿---
 export interface Props {
   pageSlug: string;
 }
@@ -240,7 +240,7 @@ const { pageSlug } = Astro.props;
         .map((r) => `*${r.posicao}* • ${r.milhar} — ${ANIMAIS[r.grupo] || '—'}`)
         .join('\n');
       card.setAttribute('data-texto-zap',
-        `🍀 *${exibicao}*\n*${dataFormatada}*\n\n${resultadosTexto}\n\n━━━━━━━━━━━━━━\n🌐 *loteriabr.online*`);
+        `*${exibicao}*\n*${dataFormatada}*\n\n${resultadosTexto}\n\n━━━━━━━━━━━━━━\n*loteriabr.online*`);
 
       resultContainer.appendChild(card);
     }
