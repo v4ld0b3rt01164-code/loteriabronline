@@ -22,8 +22,18 @@ export const FILTROS: Record<string, string[]> = {
   nacional: ['NACIONAL'],
   bahia: ['BAHIA'],
   saopaulo: ['SÃO PAULO'],
-  federal: ['FEDERAL'],
 };
+
+export const TEXTOS = {
+  premio: '1º Prêmio',
+  compartilhar: 'Compartilhar',
+  nenhumResultado: 'Nenhum resultado disponível para esta data.',
+  erroCarregar: 'Erro ao carregar resultados. Tente novamente.',
+  carregando: 'Carregando resultados...',
+  posicao: 'Posição',
+  milhar: 'Milhar',
+  grupo: 'Grupo',
+} as const;
 
 export const API_URL =
   window.API_URL ||

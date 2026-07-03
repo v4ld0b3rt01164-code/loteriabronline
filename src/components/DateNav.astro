@@ -1,4 +1,7 @@
 ﻿---
+import DatePicker from './DatePicker.astro';
+import { TEXTOS } from '../lib/constants';
+
 export interface Props {
   pageSlug: string;
 }
@@ -6,30 +9,61 @@ export interface Props {
 const { pageSlug } = Astro.props;
 ---
 
-<div
-  data-page-slug={pageSlug}
-  id="dateNav"
-  class="flex items-center bg-surface-2/60 border border-accent/15 rounded-xl w-auto max-w-[200px] md:max-w-[300px] min-h-[40px] overflow-hidden backdrop-blur-sm hover:border-accent/30 transition-all duration-300"
->
-  <button id="prevDate" class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-r border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none" aria-label="Data anterior">
-    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <input
-    type="date"
-    id="inputData"
-    class="flex-1 bg-transparent text-text-primary px-1.5 py-2 font-mono font-semibold text-center cursor-pointer text-xs md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset md:[&::-webkit-calendar-picker-indicator]:w-5 md:[&::-webkit-calendar-picker-indicator]:h-5 md:[&::-webkit-calendar-picker-indicator]:opacity-80 md:[&::-webkit-calendar-picker-indicator]:cursor-pointer md:[&::-webkit-calendar-picker-indicator]:invert"
-    aria-label="Selecionar data"
-  />
-  <button id="nextDate" class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-l border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none" aria-label="Próxima data">
-    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-</div>
+<DatePicker pageSlug={pageSlug} />
+
+<template id="cardTemplate">
+  <article class="result-card">
+    <div class="card-title text-center text-sm md:text-base font-extrabold uppercase py-3 px-3 tracking-wider text-white whitespace-nowrap overflow-hidden text-ellipsis"></div>
+    <div class="p-3 md:p-5 flex flex-col gap-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex flex-col min-w-0">
+          <span class="text-[13px] md:text-xs uppercase font-semibold text-text-muted tracking-wider">1º Prêmio</span>
+          <span class="card-milhar text-[26px] md:text-3xl font-black tracking-wider gradient-text"></span>
+        </div>
+        <div class="flex flex-col items-center gap-1 shrink-0">
+          <span class="card-animal-name text-xs md:text-sm font-bold text-accent-light text-center leading-tight"></span>
+          <img
+            class="w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]"
+            loading="lazy"
+            decoding="async"
+            width="56"
+            height="56"
+            alt=""
+          />
+        </div>
+      </div>
+      <table class="w-full text-[15px] md:text-base border-collapse">
+        <caption class="sr-only"></caption>
+        <thead class="hidden md:table-header-group">
+          <tr class="border-b border-white/20">
+            <th class="text-text-muted text-xs uppercase font-semibold tracking-wider py-2 px-2 text-left">Posição</th>
+            <th class="text-text-muted text-xs uppercase font-semibold tracking-wider py-2 px-1 text-center">Milhar</th>
+            <th class="text-text-muted text-xs uppercase font-semibold tracking-wider py-2 px-2 text-right">Grupo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <a
+        class="share-btn w-full bg-gradient-to-r from-accent/10 via-violet/10 to-pink/10 border border-accent/15 text-accent-light font-semibold py-2.5 rounded-xl hover:border-accent/30 hover:from-accent/15 hover:via-violet/15 hover:to-pink/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base no-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label=""
+      >
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span>Compartilhar</span>
+      </a>
+    </div>
+  </article>
+</template>
 
 <script>
   import {
     API_URL,
     FILTROS,
     ANIMAIS,
+    TEXTOS,
   } from '../lib/constants';
   import {
     getDataInteligente,
@@ -48,10 +82,16 @@ const { pageSlug } = Astro.props;
   const loadingState = document.getElementById('loadingState')!;
 
   const filterList = FILTROS[pageSlug] || FILTROS['index'];
+  const cardTemplate = document.getElementById('cardTemplate') as HTMLTemplateElement;
 
   inputData.value =
     new URLSearchParams(window.location.search).get('data') ||
     getDataInteligente();
+
+  function emptyStateMsg(texto: string) {
+    const p = emptyState.querySelector('p');
+    if (p) p.textContent = texto;
+  }
 
   async function carregarResultados() {
     const data = inputData.value;
@@ -88,23 +128,18 @@ const { pageSlug } = Astro.props;
         );
       });
 
-      emptyStateMsg('Nenhum resultado disponível para esta data.');
+      emptyStateMsg(TEXTOS.nenhumResultado);
       renderizarCards(filtradas, data);
     } catch (err) {
       loadingState.classList.add('hidden');
       const msg = (err as Error).message;
       if (msg === 'network') {
-        emptyStateMsg('Erro ao carregar resultados. Tente novamente.');
+        emptyStateMsg(TEXTOS.erroCarregar);
       } else {
-        emptyStateMsg('Nenhum resultado disponível para esta data.');
+        emptyStateMsg(TEXTOS.nenhumResultado);
       }
       emptyState.classList.remove('hidden');
     }
-  }
-
-  function emptyStateMsg(texto: string) {
-    const p = emptyState.querySelector('p');
-    if (p) p.textContent = texto;
   }
 
   function renderizarCards(lista: LoteriaResultado[], dataAtual: string) {
@@ -118,163 +153,75 @@ const { pageSlug } = Astro.props;
 
     const dataFormatada = formatarDataBR(dataAtual);
 
-    for (const loteria of lista) {
+    for (let idx = 0; idx < lista.length; idx++) {
+      const loteria = lista[idx];
       const resultadosExibir = loteria.resultados;
       const primeiro = resultadosExibir[0] || { milhar: '----', grupo: 0 };
       const animal = ANIMAIS[primeiro.grupo] || 'Desconhecido';
       const exibicao = nomeExibicao(loteria.nome_loteria);
-
-      const idx = Array.from(resultContainer.children).length;
       const isPar = idx % 2 === 0;
 
-      const card = document.createElement('div');
-      card.className = 'result-card';
+      const clone = cardTemplate.content.cloneNode(true) as DocumentFragment;
+      const card = clone.querySelector('article')!;
+
       card.style.animationDelay = `${idx * 0.06}s`;
+      card.setAttribute('aria-label', `${exibicao} — ${dataFormatada}`);
 
       const tituloGradient = isPar
-        ? 'background: linear-gradient(135deg, #6366F1, #8B5CF6);'
-        : 'background: linear-gradient(135deg, #8B5CF6, #EC4899);';
+        ? 'linear-gradient(135deg, #6366F1, #8B5CF6)'
+        : 'linear-gradient(135deg, #8B5CF6, #EC4899)';
 
-      const tituloDiv = document.createElement('div');
-      tituloDiv.className = 'text-center text-sm md:text-base font-extrabold uppercase py-3 px-3 tracking-wider text-white whitespace-nowrap overflow-hidden text-ellipsis';
-      tituloDiv.style.cssText = tituloGradient;
-      tituloDiv.textContent = exibicao;
+      const titleDiv = card.querySelector('.card-title')!;
+      titleDiv.style.background = tituloGradient;
+      titleDiv.textContent = exibicao;
 
-      const bodyDiv = document.createElement('div');
-      bodyDiv.className = 'p-3 md:p-5 flex flex-col gap-3';
+      card.querySelector('.card-milhar')!.textContent = primeiro.milhar;
 
-      const topRow = document.createElement('div');
-      topRow.className = 'flex items-center justify-between gap-2';
+      const animalNameEl = card.querySelector('.card-animal-name')!;
+      animalNameEl.textContent = animal;
 
-      const infoCol = document.createElement('div');
-      infoCol.className = 'flex flex-col min-w-0';
-
-      const labelSpan = document.createElement('span');
-      labelSpan.className = 'text-[13px] md:text-xs uppercase font-semibold text-text-muted tracking-wider';
-      labelSpan.textContent = '1º Prêmio';
-
-      const valorSpan = document.createElement('span');
-      valorSpan.className = 'text-[26px] md:text-3xl font-black tracking-wider gradient-text';
-      valorSpan.textContent = primeiro.milhar;
-
-      infoCol.appendChild(labelSpan);
-      infoCol.appendChild(valorSpan);
-
-      const animalCol = document.createElement('div');
-      animalCol.className = 'flex flex-col items-center gap-1 shrink-0';
-
-      const animalNome = document.createElement('span');
-      animalNome.className = 'text-xs md:text-sm font-bold text-accent-light text-center leading-tight';
-      animalNome.textContent = animal;
-
-      const animalImg = document.createElement('img');
-      animalImg.className = 'w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]';
-      animalImg.loading = 'lazy';
-      animalImg.decoding = 'async';
-      animalImg.width = 56;
-      animalImg.height = 56;
+      const animalImg = card.querySelector('img')!;
       animalImg.src = `/animais-webp/${primeiro.grupo}.webp`;
       animalImg.alt = animal;
 
-      animalCol.appendChild(animalNome);
-      animalCol.appendChild(animalImg);
+      const caption = card.querySelector('caption')!;
+      caption.textContent = `Resultados completos de ${exibicao} em ${dataFormatada}`;
 
-      topRow.appendChild(infoCol);
-      topRow.appendChild(animalCol);
-
-      const table = document.createElement('table');
-      table.className = 'w-full text-[15px] md:text-base border-collapse';
+      const table = card.querySelector('table')!;
       table.setAttribute('aria-label', `Resultados de ${exibicao}`);
 
-      const thead = document.createElement('thead');
-      thead.className = 'hidden md:table-header-group';
-      const headerRow = document.createElement('tr');
-      headerRow.className = 'border-b border-white/20';
-      for (const thText of ['Posição', 'Milhar', 'Grupo']) {
-        const th = document.createElement('th');
-        th.className = 'text-text-muted text-xs uppercase font-semibold tracking-wider py-2 px-2';
-        th.textContent = thText;
-        headerRow.appendChild(th);
-      }
-      thead.appendChild(headerRow);
-      table.appendChild(thead);
-
-      const tbody = document.createElement('tbody');
-
-      for (const r of resultadosExibir) {
+      const tbody = card.querySelector('tbody')!;
+      for (let i = 0; i < resultadosExibir.length; i++) {
+        const r = resultadosExibir[i];
         const tr = document.createElement('tr');
         tr.className = 'border-b border-white/20';
-        const rowIdx = resultadosExibir.indexOf(r);
-        if (rowIdx % 2 === 0) {
+        if (i % 2 === 0) {
           tr.style.background = 'rgba(148, 163, 184, 0.04)';
         }
 
-        const td1 = document.createElement('td');
-        td1.className = 'text-text-secondary font-medium py-3 px-2 w-[35%]';
-        td1.textContent = r.posicao;
-
-        const td2 = document.createElement('td');
-        td2.className = 'font-bold text-accent-light text-center py-3 px-1 w-[30%]';
-        td2.textContent = r.milhar;
-
-        const td3 = document.createElement('td');
-        td3.className = 'text-text-secondary font-medium text-right py-3 px-2 w-[35%]';
-        td3.textContent = r.grupo > 0 ? String(r.grupo) : '-';
-
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
+        tr.innerHTML = `
+          <td class="text-text-secondary font-medium py-3 px-2 w-[35%]">${r.posicao}</td>
+          <td class="font-bold text-accent-light text-center py-3 px-1 w-[30%]">${r.milhar}</td>
+          <td class="text-text-secondary font-medium text-right py-3 px-2 w-[35%]">${r.grupo > 0 ? String(r.grupo) : '-'}</td>
+        `;
         tbody.appendChild(tr);
       }
-
-      table.appendChild(tbody);
-
-      const shareBtn = document.createElement('button');
-      shareBtn.className = 'share-btn w-full bg-gradient-to-r from-accent/10 via-violet/10 to-pink/10 border border-accent/15 text-accent-light font-semibold py-2.5 rounded-xl hover:border-accent/30 hover:from-accent/15 hover:via-violet/15 hover:to-pink/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base';
-      shareBtn.setAttribute('aria-label', `Compartilhar resultados de ${exibicao}`);
-
-      const shareSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      shareSvg.setAttribute('aria-hidden', 'true');
-      shareSvg.setAttribute('width', '14');
-      shareSvg.setAttribute('height', '14');
-      shareSvg.setAttribute('viewBox', '0 0 24 24');
-      shareSvg.setAttribute('fill', 'currentColor');
-      const sharePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      sharePath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z');
-      shareSvg.appendChild(sharePath);
-
-      const shareText = document.createTextNode(' Compartilhar');
-      shareBtn.appendChild(shareSvg);
-      shareBtn.appendChild(shareText);
-
-      bodyDiv.appendChild(topRow);
-      bodyDiv.appendChild(table);
-      bodyDiv.appendChild(shareBtn);
-
-      card.appendChild(tituloDiv);
-      card.appendChild(bodyDiv);
 
       const resultadosTexto = resultadosExibir
         .map((r) => `*${r.posicao}* • ${r.milhar} — ${ANIMAIS[r.grupo] || '—'}`)
         .join('\n');
-      card.setAttribute('data-texto-zap',
-        `*${exibicao}*\n*${dataFormatada}*\n\n${resultadosTexto}\n\n━━━━━━━━━━━━━━\n*loteriabr.online*`);
+
+      const shareUrl = `https://wa.me/?text=${encodeURIComponent(
+        `*${exibicao}*\n*${dataFormatada}*\n\n${resultadosTexto}\n\n━━━━━━━━━━━━━━\n*loteriabr.online*`
+      )}`;
+
+      const shareLink = card.querySelector('.share-btn') as HTMLAnchorElement;
+      shareLink.href = shareUrl;
+      shareLink.setAttribute('aria-label', `Compartilhar resultados de ${exibicao} no WhatsApp`);
 
       resultContainer.appendChild(card);
     }
   }
-
-  resultContainer.addEventListener('click', (e) => {
-    const btn = (e.target as Element).closest('.share-btn');
-    if (!btn) return;
-    const cardEl = btn.closest('[data-texto-zap]') as HTMLElement;
-    if (!cardEl) return;
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`,
-      '_blank',
-      'noopener,noreferrer'
-    );
-  });
 
   function mudarData(delta: number) {
     const d = new Date(inputData.value + 'T12:00:00');

@@ -4,6 +4,12 @@ export interface Props {
 }
 
 const { currentPage } = Astro.props;
+
+const NAV_LINKS = [
+  { href: '/contato', label: 'Contato', slug: 'contato' },
+  { href: '/politica-de-privacidade', label: 'Privacidade', slug: 'politica-de-privacidade' },
+  { href: '/termos-de-uso', label: 'Termos', slug: 'termos-de-uso' },
+];
 ---
 
 <footer
@@ -12,12 +18,19 @@ const { currentPage } = Astro.props;
 >
   <div class="h-full flex items-center justify-center">
     <div class="flex flex-col items-center gap-0.5 px-4">
-      <nav class="flex items-center gap-1 text-sm md:text-base">
-        <a href="/contato" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Contato</a>
-        <span class="text-text-muted/30">|</span>
-        <a href="/politica-de-privacidade" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Privacidade</a>
-        <span class="text-text-muted/30">|</span>
-        <a href="/termos-de-uso" class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1">Termos</a>
+      <nav class="flex items-center gap-1 text-sm md:text-base" aria-label="Rodapé">
+        {NAV_LINKS.map((link, i) => (
+          <>
+            {i > 0 && <span class="text-text-muted/30" aria-hidden="true">|</span>}
+            <a
+              href={link.href}
+              class="text-text-secondary hover:text-accent-light transition-colors px-2 py-1"
+              aria-current={link.slug === currentPage ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </>
+        ))}
       </nav>
       <p class="text-text-muted text-xs md:text-sm">
         &copy; <span id="year"></span> LoteriaBR

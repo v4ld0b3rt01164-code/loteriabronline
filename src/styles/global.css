@@ -263,12 +263,6 @@
     }
   }
 
-  @media (min-width: 1440px) {
-    .card-grid {
-      grid-template-columns: repeat(5, 1fr);
-    }
-  }
-
   .result-card {
     @apply rounded-2xl p-0 overflow-hidden transition-all duration-500;
     background: rgba(10, 10, 28, 0.55);
@@ -283,17 +277,6 @@
     border-color: rgba(99, 102, 241, 0.25);
     box-shadow: 0 16px 48px rgba(99, 102, 241, 0.1), 0 0 30px rgba(139, 92, 246, 0.05);
   }
-
-  .result-card:nth-child(1) { animation-delay: 0.05s; }
-  .result-card:nth-child(2) { animation-delay: 0.1s; }
-  .result-card:nth-child(3) { animation-delay: 0.15s; }
-  .result-card:nth-child(4) { animation-delay: 0.2s; }
-  .result-card:nth-child(5) { animation-delay: 0.25s; }
-  .result-card:nth-child(6) { animation-delay: 0.3s; }
-  .result-card:nth-child(7) { animation-delay: 0.35s; }
-  .result-card:nth-child(8) { animation-delay: 0.4s; }
-  .result-card:nth-child(9) { animation-delay: 0.45s; }
-  .result-card:nth-child(10) { animation-delay: 0.5s; }
 
   .glass {
     background: var(--glass-bg);
@@ -319,5 +302,20 @@
     background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .result-card:hover {
+    transform: none;
+  }
+  .btn-voltar:hover {
+    transform: none;
   }
 }

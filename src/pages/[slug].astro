@@ -1,0 +1,53 @@
+---
+import ResultLayout from '../layouts/ResultLayout.astro';
+
+export function getStaticPaths() {
+  return [
+    {
+      params: { slug: 'look' },
+      props: {
+        title: 'LOOK - Goiás - LoteriaBR',
+        description: 'Resultados do Jogo do Bicho - LOOK Goiás',
+        currentPage: 'look',
+        pageSlug: 'look',
+      },
+    },
+    {
+      params: { slug: 'nacional' },
+      props: {
+        title: 'Loteria Nacional - LoteriaBR',
+        description: 'Resultados da Loteria Nacional',
+        currentPage: 'nacional',
+        pageSlug: 'nacional',
+      },
+    },
+    {
+      params: { slug: 'bahia' },
+      props: {
+        title: 'Bahia - LoteriaBR',
+        description: 'Resultados do Jogo do Bicho - Bahia',
+        currentPage: 'bahia',
+        pageSlug: 'bahia',
+      },
+    },
+    {
+      params: { slug: 'saopaulo' },
+      props: {
+        title: 'São Paulo - LoteriaBR',
+        description: 'Resultados do Jogo do Bicho - São Paulo',
+        currentPage: 'saopaulo',
+        pageSlug: 'saopaulo',
+      },
+    },
+  ];
+}
+
+const { title, description, currentPage, pageSlug } = Astro.props;
+---
+
+<ResultLayout
+  title={title}
+  description={description}
+  currentPage={currentPage}
+  pageSlug={pageSlug}
+/>

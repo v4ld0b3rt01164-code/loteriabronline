@@ -1,0 +1,34 @@
+---
+export interface Props {
+  pageSlug: string;
+}
+
+const { pageSlug } = Astro.props;
+---
+
+<div
+  data-page-slug={pageSlug}
+  id="dateNav"
+  class="flex items-center bg-surface-2/60 border border-accent/15 rounded-xl w-auto max-w-[200px] md:max-w-[300px] min-h-[42px] overflow-hidden backdrop-blur-sm hover:border-accent/30 transition-all duration-300"
+>
+  <button
+    id="prevDate"
+    class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-r border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none"
+    aria-label="Data anterior"
+  >
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <input
+    type="date"
+    id="inputData"
+    class="flex-1 bg-transparent text-text-primary px-1.5 py-2 font-mono font-semibold text-center cursor-pointer text-xs md:text-base leading-tight outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset md:[&::-webkit-calendar-picker-indicator]:w-5 md:[&::-webkit-calendar-picker-indicator]:h-5 md:[&::-webkit-calendar-picker-indicator]:opacity-80 md:[&::-webkit-calendar-picker-indicator]:cursor-pointer md:[&::-webkit-calendar-picker-indicator]:invert"
+    aria-label="Selecionar data"
+  />
+  <button
+    id="nextDate"
+    class="flex items-center justify-center w-9 h-full text-accent-light hover:bg-accent/10 transition-all duration-200 shrink-0 border-l border-accent/10 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:outline-none"
+    aria-label="Próxima data"
+  >
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
