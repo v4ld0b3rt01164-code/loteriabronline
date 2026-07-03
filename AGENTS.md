@@ -24,16 +24,29 @@ No test suite exists.
 - **Worker file**: `atualiza-resultados` (no extension) at repo root
 
 ## Components
-- `Header.astro` — Main header (lottery result pages only)
+- `Header.astro` — Main header (lottery result pages). Logo has `fetchpriority="high"`.
 - `StaticHeader.astro` — Simplified header for static pages (contato, política, termos)
-- `Footer.astro` — Fixed footer with nav links
+- `Footer.astro` — Fixed footer with `aria-current="page"` on active nav link, `aria-label="Rodapé"`
 - `LotterySelector.astro` — Dropdown to switch between lottery pages
-- `DateNav.astro` — Date navigation + card rendering + WhatsApp share
+- `DatePicker.astro` — Extracted date navigation controls (prev/input/next)
+- `DateNav.astro` — Imports DatePicker, contains `<template id="cardTemplate">` and all client-side logic (fetch, filter, render, WhatsApp share, auto-refresh)
+- `ResultCard.astro` — Semantic card component (`<article>`, `<h3>`, `<caption>`, `<table>`) for future SSR use
+
+## Card Rendering
+Cards are rendered client-side via `<template>` cloning (not `createElement`). The template is in `DateNav.astro`. Each card is an `<article class="result-card">` with proper headings and table semantics. The JS clones the template, populates data, and appends to `#resultContainer`.
+
+WhatsApp share is an `<a>` tag (not `<button>`) with `target="_blank" rel="noopener noreferrer"`.
+
+## Pages
+- `src/pages/index.astro` — Homepage (BR, Rio de Janeiro, Federal). Standalone file.
+- `src/pages/[slug].astro` — Dynamic route for look, nacional, bahia, saopaulo. Uses `getStaticPaths()`.
+- Static pages: `contato.astro`, `politica-de-privacidade.astro`, `termos-de-uso.astro`, `404.astro`
 
 ## SEO
 - `og-image.webp` in `public/` (1200x630px) for social media sharing
-- `BaseLayout.astro` includes: canonical, og:url, og:locale, og:image dimensions, twitter:summary_large_image
-- Structured data (JSON-LD) on homepage
+- `BaseLayout.astro`: canonical, `hreflang="pt-BR"`, `robots: index, follow`, og:url, og:locale, og:image dimensions, twitter:summary_large_image
+- Structured data (JSON-LD `WebSite`) on homepage
+- `manifest.json` with PWA icons (192x192, 512x512)
 
 ## WhatsApp Share
 Message is plain text only (no emojis — caused encoding issues on PC Web):
@@ -48,22 +61,24 @@ Message is plain text only (no emojis — caused encoding issues on PC Web):
 ━━━━━━━━━━━━━━
 *loteriabr.online*
 ```
-Share button uses `wa.me` link with `encodeURIComponent`. Opens with `rel="noopener,noreferrer"`.
+Share link uses `wa.me` with `encodeURIComponent`. Opens with `rel="noopener,noreferrer"`.
+
+## i18n
+Text strings are centralized in `src/lib/constants.ts` as `TEXTOS` object. Use this instead of hardcoding Portuguese strings in components.
 
 ## Grid System
 - `<640px`: 2 cols; `640-1024px`: 3 cols; `1024px+`: 5 cols
 - Defined in `src/styles/global.css` as `.card-grid`
+- `prefers-reduced-motion: reduce` disables all animations
 
 ## Lottery Pages & Filters (`FILTROS` in `constants.ts`)
 | slug | lotteries |
 |------|-----------|
 | index | BR, RIO DE JANEIRO, FEDERAL |
-| look | GOIAS |
+| look | GOIÁS |
 | nacional | NACIONAL |
 | bahia | BAHIA |
-| saopaulo | SAO PAULO |
-
-Note: `federal.astro` was removed — Federal results are already integrated into the index page.
+| saopaulo | SÃO PAULO |
 
 ## Lottery Data Rules
 - **BAHIA**: 10 prizes, all drawn. `origem: "BA"` in KV (not "BAHIA").
@@ -80,10 +95,11 @@ Worker deploys via Cloudflare API (not wrangler CLI). Token MUST have both `Work
 `wrangler.toml` has `[observability]` — do NOT add `[observability.logs]` or `[observability.traces]` sub-tables (invalid schema, causes error 1102 on deploy).
 
 ## Key Directories
-- `src/components/` — Header, StaticHeader, Footer, DateNav, LotterySelector
-- `src/lib/` — `constants.ts` (ANIMAIS, FILTROS, API_URL), `utils.ts`
+- `src/components/` — Header, StaticHeader, Footer, DatePicker, DateNav, LotterySelector, ResultCard
+- `src/lib/` — `constants.ts` (ANIMAIS, FILTROS, TEXTOS, API_URL), `utils.ts`
 - `public/animais-webp/` — 25 animal images (1-25.webp)
 - `public/og-image.webp` — Open Graph image (1200x630)
+- `public/icon-192.png`, `icon-512.png` — PWA icons
 - `functions/api/contato.ts` — contact form (Resend, sends to loteriabronline@gmail.com)
 
 ## Gotchas
@@ -93,3 +109,4 @@ Worker deploys via Cloudflare API (not wrangler CLI). Token MUST have both `Work
 - Logo: `logo.webp` (1134x304, alpha). Mobile: 65px h, Desktop: 100px h
 - Table `<thead>` is hidden on mobile (`hidden md:table-header-group`) to prevent column overflow
 - Animal images use `loading="lazy"` and explicit `width`/`height` for CLS prevention
+- `getStaticPaths()` in `[slug].astro` must inline props directly — cannot reference variables defined outside the function (Astro compilation quirk)
