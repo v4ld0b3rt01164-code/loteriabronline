@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import StaticHeader from '../components/StaticHeader.astro';
 ---
 
 <BaseLayout
@@ -7,17 +8,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Política de Privacidade do site LoteriaBR"
   currentPage="politica-de-privacidade"
 >
-  <header slot="header" class="fixed top-0 left-0 w-full z-50 glass border-b border-accent/10" style="box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);">
-    <div class="max-w-grid mx-auto flex items-center gap-3 px-4 py-3 md:px-6 md:py-4">
-      <a href="/" class="flex items-center gap-2.5 group" aria-label="LoteriaBR - Início">
-        <img src="/logo.webp" alt="LoteriaBR" class="h-[65px] md:h-[100px] w-auto object-contain" />
-      </a>
-      <a href="/" class="btn-voltar">
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Voltar
-      </a>
-    </div>
-  </header>
+  <Fragment slot="header">
+    <StaticHeader />
+  </Fragment>
 
   <div class="pagina-estatica">
     <h1>Política de Privacidade</h1>

@@ -1,9 +1,3 @@
-export function grupoPorMilhar(milhar: string): number {
-  const final = parseInt(milhar.slice(-2), 10);
-  if (final === 0 || final >= 97) return 25;
-  return Math.floor((final - 1) / 4) + 1;
-}
-
 export function getDataInteligente(): string {
   const agora = new Date();
   const formatter = new Intl.DateTimeFormat('pt-BR', {

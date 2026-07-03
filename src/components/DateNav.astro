@@ -169,7 +169,10 @@ const { pageSlug } = Astro.props;
 
       const animalImg = document.createElement('img');
       animalImg.className = 'w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]';
-      animalImg.loading = true;
+      animalImg.loading = 'lazy';
+      animalImg.decoding = 'async';
+      animalImg.width = 56;
+      animalImg.height = 56;
       animalImg.src = `/animais-webp/${primeiro.grupo}.webp`;
       animalImg.alt = animal;
 
@@ -181,6 +184,19 @@ const { pageSlug } = Astro.props;
 
       const table = document.createElement('table');
       table.className = 'w-full text-[15px] md:text-base border-collapse';
+      table.setAttribute('aria-label', `Resultados de ${exibicao}`);
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      headerRow.className = 'border-b border-white/20';
+      for (const thText of ['Posição', 'Milhar', 'Grupo']) {
+        const th = document.createElement('th');
+        th.className = 'text-text-muted text-xs uppercase font-semibold tracking-wider py-2 px-2';
+        th.textContent = thText;
+        headerRow.appendChild(th);
+      }
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
 
       const tbody = document.createElement('tbody');
 
@@ -214,6 +230,7 @@ const { pageSlug } = Astro.props;
 
       const shareBtn = document.createElement('button');
       shareBtn.className = 'share-btn w-full bg-gradient-to-r from-accent/10 via-violet/10 to-pink/10 border border-accent/15 text-accent-light font-semibold py-2.5 rounded-xl hover:border-accent/30 hover:from-accent/15 hover:via-violet/15 hover:to-pink/15 transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base';
+      shareBtn.setAttribute('aria-label', `Compartilhar resultados de ${exibicao}`);
 
       const shareSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       shareSvg.setAttribute('aria-hidden', 'true');
@@ -253,7 +270,8 @@ const { pageSlug } = Astro.props;
     if (!cardEl) return;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(cardEl.getAttribute('data-texto-zap') || '')}`,
-      '_blank'
+      '_blank',
+      'noopener,noreferrer'
     );
   });
 

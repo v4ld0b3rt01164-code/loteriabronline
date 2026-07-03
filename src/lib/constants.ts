@@ -25,16 +25,6 @@ export const FILTROS: Record<string, string[]> = {
   federal: ['FEDERAL'],
 };
 
-export const NOMES_LOTERIAS: Record<string, string> = {
-  NACIONAL: 'NACIONAL',
-  FEDERAL: 'FEDERAL',
-  RJ: 'RIO DE JANEIRO',
-  SP: 'SÃO PAULO',
-  BA: 'BAHIA',
-  LBR: 'BR',
-  LOOK: 'GOIÁS',
-};
-
 export const API_URL =
   window.API_URL ||
   'https://atualiza-resultados.v4ld0b3rt01164.workers.dev/api/listar';
